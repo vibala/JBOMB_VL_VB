@@ -2,10 +2,11 @@ package com.fr.ece.jbomb.view;
 
 public enum Plateau {
 
-	HEIGHT_PLATEAU(608),
-	WIDTH_PLATEAU(800),
-	HEIGHT_CASE(32),
-	WIDTH_CASE(32);
+	LONGUEUR_PLATEAU(608),
+	LARGEUR_PLATEAU(800),
+	LONGUEUR_CASE(32),
+	LARGEUR_CASE(32);
+	
 	
 	private int valeur;
 	
