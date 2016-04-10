@@ -1,4 +1,5 @@
 package com.fr.ece.jbomb.controller;
+import com.fr.ece.jbomb.model.ServerTest;
 import com.fr.ece.jbomb.view.GUI;
 import com.fr.ece.jbomb.view.KeyEventHandler;
 import javafx.application.Application;
@@ -22,7 +23,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		
 		// TODO Auto-generated method stub
-		Pane layout = (Pane) FXMLLoader.load(Main.class.getResource("/view/vueGraphique.fxml"));
+		Pane layout = (Pane) FXMLLoader.load(Main.class.getResource("/com/fr/ece/jbomb/view/vueGraphique.fxml"));
 		Group group = new Group(layout);
 		
 		// Construction des canvas
@@ -48,15 +49,20 @@ public class Main extends Application {
 				kev.remove(code);
 			}
 		});
-
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		GUI gui = new GUI();
-		Controller controller = new Controller();
-		controller.setInit(gui, canvas, canvas2, kev);
+		
+		GUI gui = new GUI();		
+		ServerTest model = new ServerTest();		
+		Controller controller = new Controller();	
+		controller.setInit(gui,model, canvas, canvas2, kev);
 		controller.start();
 
+	
+		
+		
+		
 	}
 
 }

@@ -37,7 +37,13 @@ public abstract class Sprite {
 	public boolean intersects(Sprite s) {
 		return s.getBoundary().intersects(this.getBoundary());
 	}
-
+	/*
+	sprite: tab
+	
+	sprite.intersect(player)
+	*/
+	
+	
 	public void setImage(Image image) {
 		this.image = image;
 	}
