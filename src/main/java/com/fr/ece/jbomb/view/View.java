@@ -6,5 +6,5 @@ import javafx.scene.canvas.Canvas;
 
 public interface View {
 	void setController(GUIListener controller);
-	public void start(Canvas canvas, Canvas canvas2, KeyEventHandler kev);
-	}
+	public void start(Canvas canvas, Canvas canvas2,KeyEventHandler kev);
+}

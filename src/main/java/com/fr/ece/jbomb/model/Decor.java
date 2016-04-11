@@ -1,11 +1,9 @@
 package com.fr.ece.jbomb.model;
 
-import javafx.scene.image.Image;
+public class Decor extends Sprite{
 
-public class Decor  extends Sprite{
-	Image image;
 	
-	public Decor(Image image, double posX, double posY, double width, double height) {
+	public Decor( double posX, double posY, double width, double height) {
 		super(posX, posY, width, height);
 	}
 	

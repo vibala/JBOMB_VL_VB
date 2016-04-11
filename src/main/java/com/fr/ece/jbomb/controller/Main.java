@@ -12,17 +12,17 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Application.launch(args);
+	
+	public static void main(String[] args)  {
+	
+		//Lancement de l'interface graphique
+	      Application.launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		// TODO Auto-generated method stub
-		Pane layout = (Pane) FXMLLoader.load(Main.class.getResource("/view/vueGraphique.fxml"));
+		Pane layout = (Pane) FXMLLoader.load(Main.class.getResource("/com/fr/ece/jbomb/view/vueGraphique.fxml"));
 		Group group = new Group(layout);
 		
 		// Construction des canvas
@@ -52,9 +52,22 @@ public class Main extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
+		
+		//Connexion
+		String serverIP="127.0.0.1";
+		int serverPort=1234;
+		
+		String clientIP="127.0.0.1";
+		int clientPort=1235;
+				
+		Client moi=new Client(clientIP,clientPort);
+		Controller controller = new Controller(moi,serverIP,serverPort);
+
+		//Vue
 		GUI gui = new GUI();
-		Controller controller = new Controller();
 		controller.setInit(gui, canvas, canvas2, kev);
+		
+		//Lancement
 		controller.start();
 
 	}
