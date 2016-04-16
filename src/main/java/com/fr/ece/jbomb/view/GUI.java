@@ -10,8 +10,6 @@ import com.fr.ece.jbomb.model.ConfToServer;
 import com.fr.ece.jbomb.model.Decor;
 import com.fr.ece.jbomb.model.Plateau;
 import com.fr.ece.jbomb.model.Player;
-import com.fr.ece.jbomb.model.Sprite;
-
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -66,6 +64,7 @@ public class GUI extends AbstractView {
 			
 		// Instanciation d'un objet decor, des objets player
 		Decor decor;
+		System.out.println("ll");
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
 				switch (plateau[i][j]) {
