@@ -43,10 +43,10 @@ public class Server {
 
 				//Création du joueur
 				Player player = null;
-				if(listConnectionHandler.size()+1==1)  player=new Player(1,32, 32, 18, 24); 
-				else if(listConnectionHandler.size()+1==2)  player=new Player(2,736, 32, 18, 24);
-				else if(listConnectionHandler.size()+1==3)  player=new Player(3,32, 536, 18, 24);
-				else if(listConnectionHandler.size()+1==4)  player=new Player(4,736, 536, 18, 24);
+				if(listConnectionHandler.size()+1==1)  player=new Player(1,736, 536, 32, 32); 
+				else if(listConnectionHandler.size()+1==2)  player=new Player(2,32, 32, 32, 32);
+				else if(listConnectionHandler.size()+1==3)  player=new Player(3,736, 32, 32, 32);
+				else if(listConnectionHandler.size()+1==4)  player=new Player(4,32, 536, 32, 32);
 
 				confFromServer.addPlayer(player); // On ajoute le joueur à la liste des joueurs
 				

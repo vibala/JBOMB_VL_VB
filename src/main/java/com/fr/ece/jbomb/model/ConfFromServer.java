@@ -39,7 +39,7 @@ public class ConfFromServer implements Serializable {
 		//Création d'un tableau aléatoire
 		this.plateau = new Plateau[17][23];
 		ajout_piliers_sols();
-		ajout_murs();
+		//ajout_murs();
 		ajout_players();
 		
 		update_array_plateau();
@@ -70,8 +70,11 @@ public class ConfFromServer implements Serializable {
 		
 		picked_random_numbers.add(0); // a retirer??????????????????????????????????????????????????????????????????????????????????????????????
 		plateau[16][22] = Plateau.PLAYER1; //  a retirer ????????????????????????????????????????????????????????????????????????????????
+		plateau[0][0] = Plateau.PLAYER2;
+		plateau[16][0] = Plateau.PLAYER3;
+		plateau[0][22] = Plateau.PLAYER4;
 		// 4 changer 3 par 4 //A CHANGER ??????????????????????????????????????????????????????????????????????????????
-		for(int i = 0; i < 3; i++){
+	/*	for(int i = 0; i < 3; i++){
 			cds = false;
 			while(!cds){
 				int rd = rand.nextInt(4); // entre 0 et 3
@@ -84,7 +87,7 @@ public class ConfFromServer implements Serializable {
 					cds = true;
 				}
 			}
-		}
+		}*/
 		System.out.println("Ajout_Players : Sortie");
 	}
 
@@ -240,7 +243,6 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("RIGHT");
 			if (!onPressedRight(player)) {
 				player.move(1, 0);
-				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 		}
 
@@ -250,7 +252,6 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("LEFT");
 			if (!onPressedLeft(player)) {
 				player.move(-1, 0);
-				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 
 		}
@@ -260,7 +261,6 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("UP");
 			if (!onPressedUp(player)) {
 				player.move(0, -1);
-				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 		}
 
@@ -270,7 +270,6 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("DOWN");
 			if (!onPressedDown(player)) {
 				player.move(0, 1);
-				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 
 		}
@@ -432,45 +431,41 @@ public class ConfFromServer implements Serializable {
 			if (positionRow_neighbor >= 0) {
 				
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-
+Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-				player1.move(0, -1);
+simul.move(0, -1);
 
 				System.out.println("SIMU DONE");
-				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
 				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
-				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,NORD);
+				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul,NORD);
 				// Conditions : Vérification des collisions
-				if (player1.intersects(neighbor) && nb_intersections == 0){
+				if (simul.intersects(neighbor) && nb_intersections == 0){
 					System.out.println("Mono intersection ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
 						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player1.getPositionY() + 16 && player1.getPositionY() + 16 <= max) {
+						if (min <= simul.getPositionY() + 16 && simul.getPositionY() + 16 <= max) {
 							System.out.println("CHANGE  SOL ");
 							playerByCoordinates.put(PLAYER1, new Point(positionRow_player - 1, positionCol_player));
 							plateau[positionRow_player][positionCol_player] = SOL;
 							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
 						}
-
 						return false;
 					} else {
 						System.out.println("NO SOL");
-						player1.move(0, +1);
 						return true;
 					}
-				}else if((player1.intersects(neighbor) && nb_intersections > 0)){
+				}else if((simul.intersects(neighbor) && nb_intersections > 0)){
 					System.out.println("Multi intersections");
-					player1.move(0, +1);
 					return true;
 				}
 			}else if(positionRow_neighbor == -1){
 				if (player1.getPositionY() >= 0){
 					return false;
 				}
-					player1.move(0, +1); // cancel le mov
 					return true;
 			}
 			System.out.println("NNNNN");
@@ -480,47 +475,44 @@ public class ConfFromServer implements Serializable {
 			// Coordonnes x,y du voisin dans le tableau tab[][]
 			positionRow_neighbor = positionRow_player + 1;
 			positionCol_neighbor = positionCol_player;
-
+			System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+positionRow_neighbor);
 			if (positionRow_neighbor < 17) {
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
 
+				Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-				player1.move(0, +1);
+				simul.move(0, +1);
 				System.out.println("SIMU DONE");
-				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
 				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
-				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,SUD);
+				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul,SUD);
 				
 				// Conditions : Vérification des collisions
-				if (player1.intersects(neighbor) && nb_intersections == 0){
+				if (simul.intersects(neighbor) && nb_intersections == 0){
 					System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
 						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player1.getPositionY() + 16 && player1.getPositionY() + 16 <= max) {
+						if (min <= simul.getPositionY() + 16 && simul.getPositionY() + 16 <= max) {
 							System.out.println("CHANGE  SOL ");
 							playerByCoordinates.put(PLAYER1, new Point(positionRow_player + 1, positionCol_player));
 							plateau[positionRow_player][positionCol_player] = SOL;
 							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
 						}
-	
 						return false;
 						} else {
 							System.out.println("NO SOL");
-							player1.move(0, -1);
 							return true;
 						}
-				}else if(player1.intersects(neighbor) && nb_intersections > 0){
-					player1.move(0, -1);
+				}else if(simul.intersects(neighbor) && nb_intersections > 0){
 					return true;
 				}	
 			}else if(positionRow_neighbor == 17){
 				if (player1.getPositionY() + 32 <= Plateau.LONGUEUR_PLATEAU.getValeur()-32) {
 					return false;
 				}
-					player1.move(0, -1); // cancel le mov
 					return true;
 			}
 			System.out.println("SSSSS");
@@ -537,40 +529,36 @@ public class ConfFromServer implements Serializable {
 				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
 				
+				Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-				player1.move(+1, 0);
-
-				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,EST);
+				simul.move(+1, 0);
+				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul,EST);
 
 				// Conditions : Vérification des collisions
-				if (player1.intersects(neighbor) && nb_intersections == 0){
+				if (simul.intersects(neighbor) && nb_intersections == 0){
 					System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionCol_neighbor + 1) * 32;
 						int max = (positionCol_neighbor + 2) * 32;
 						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player1.getPositionX() + 16 && player1.getPositionX() + 16 <= max) {
+						if (min <= simul.getPositionX() + 16 && simul.getPositionX() + 16 <= max) {
 							System.out.println("CHANGE  SOL ");
 							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player + 1));
 							plateau[positionRow_player][positionCol_player] = SOL;
 							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
 						}
-
 						return false;
 					} else {
 						System.out.println("NO SOL");
-						player1.move(-1, 0);
 						return true;
 					}
-				}else if(player1.intersects(neighbor) && nb_intersections > 0){
-					player1.move(-1, 0);
+				}else if(simul.intersects(neighbor) && nb_intersections > 0){
 					return true;
 				}
 			}else if (positionCol_neighbor == 23) {
 				if (player1.getPositionX() + 32 <= Plateau.LARGEUR_PLATEAU.getValeur()) {
 					return false;
 				}
-				player1.move(-1, 0); // cancel le mov
 				return true;
 			}
 			System.out.println("EEEEEE");
@@ -587,38 +575,37 @@ public class ConfFromServer implements Serializable {
 				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
 				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
+				Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-				player1.move(-1, 0);
-
+				simul.move(-1, 0);
+				
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,OUEST);
 
 				// Conditions : Vérification des collisions
-				if (player1.intersects(neighbor) && nb_intersections == 0) {
+				if (simul.intersects(neighbor) && nb_intersections == 0) {
 					System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionCol_neighbor + 1) * 32;
 						int max = (positionCol_neighbor + 2) * 32;
 						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player1.getPositionX() + 16 && player1.getPositionX() + 16 <= max) {
+						if (min <= simul.getPositionX() + 16 && simul.getPositionX() + 16 <= max) {
 							System.out.println("CHANGE  SOL ");
 							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player - 1));
 							plateau[positionRow_player][positionCol_player] = SOL;
 							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
 							return false;
+							
 						}
 					} else {
 							System.out.println("NO SOL");
-							player1.move(+1, 0);
 							return true;
 					}
 					
 				 }else if(player1.intersects(neighbor) && nb_intersections > 0){
-						player1.move(+1, 0);
 						return true;
 				 }
 			}else if (positionCol_neighbor == -1) {
 				if (player1.getPositionX() >= 0){return false;}
-				player1.move(+1, 0); // cancel le mov
 				return true;
 			}
 		}	
@@ -660,8 +647,10 @@ public class ConfFromServer implements Serializable {
 	private boolean onPressedDown(Player player) {
 		System.out.println(player.getPositionX() + " " + player.getPositionY());
 		if (exceed_fences(player, SUD)) {
+			System.out.println("p");
 			return true;
 		}
+		System.out.println("e");
 		return is_any_collision(player, SUD);
 	}
 

@@ -46,7 +46,7 @@ public class ConnectionHandler implements Runnable {
 			 while(!Server.endOftheGame){
 				
 				ConfToServer confToServer=(ConfToServer) ois.lire(); //Lecture confToServeur 3.0
-				System.out.println("Connection Handler");
+				///System.out.println("Connection Handler");
 				// JETON !!! Pour me rappeler		
 				//Traitement + Envoi de la configuration sur le tableau
 				oos.envoyer(Server.updateConfFromServer(confToServer));//Envoi de la configuration actuel sur le serveur (même si d'autres joueurs l'ont modifié entre l'update et l'envoit c'est pas grv car les changement du joueur ont été pris en comtpe)
