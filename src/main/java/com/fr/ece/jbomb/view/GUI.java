@@ -34,11 +34,6 @@ public class GUI extends AbstractView {
 	private ConfFromServer configServeur;
 	private ConfToServer configClient;
 
-	private Sprite[][] plateau_sprites;
-
-	public GUI() {
-		plateau_sprites = new Sprite[17][23];
-	}
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!A MODIFIER POUR prendre en compte la listePlayer !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private void initPlateauSprite(Plateau[][] plateau, List<Player> listPlayer) {
@@ -103,25 +98,25 @@ public class GUI extends AbstractView {
 			for (Player player : listPlayer) {
 				switch(player.getID()){
 					case 1:
-						player1 = new Player(1, (player.getPositionX() + 1) * 32, (player.getPositionY() + 1) * 32, 16, 16);
+						player1 = new Player(1, player.getPositionX(),player.getPositionY(), 32,32);
 						player1.setImage(image_joueur1);
 						//plateau_sprites[i][j] = player1;
 						gc2.drawImage(player1.getImage(), player1.getPositionX(), player1.getPositionY());
 						break;
 					case 2:
-						player2 = new Player(2, (player.getPositionX() + 1) * 32, (player.getPositionY() + 1) * 32, 16, 16);
+						player2 = new Player(2, player.getPositionX(),player.getPositionY(), 32,32);
 						player2.setImage(image_joueur2);
 						//plateau_sprites[i][j] = player2;
 						gc2.drawImage(player2.getImage(), player2.getPositionX(), player2.getPositionY());
 						break;
 					case 3:
-						player3 = new Player(3, (player.getPositionX() + 1) * 32, (player.getPositionY() + 1) * 32, 16, 16);
+						player3 = new Player(3, player.getPositionX(),player.getPositionY(), 32,32);
 						player3.setImage(image_joueur3);
 						//plateau_sprites[i][j] = player3;
 						gc2.drawImage(player3.getImage(), player3.getPositionX(), player3.getPositionY());
 						break;
 					case 4:
-						player4 = new Player(4, (player.getPositionX() + 1) * 32, (player.getPositionY() + 1) * 32, 16, 16);
+						player4 = new Player(4,  player.getPositionX(),player.getPositionY(), 32,32);
 						player4.setImage(image_joueur4);
 						//plateau_sprites[i][j] = player4;
 						gc2.drawImage(player4.getImage(), player4.getPositionX(), player4.getPositionY());

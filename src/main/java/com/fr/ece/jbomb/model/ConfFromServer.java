@@ -5,9 +5,6 @@ import static com.fr.ece.jbomb.model.Plateau.LONGUEUR_PLATEAU;
 import static com.fr.ece.jbomb.model.Plateau.MUR;
 import static com.fr.ece.jbomb.model.Plateau.PILIER;
 import static com.fr.ece.jbomb.model.Plateau.PLAYER1;
-import static com.fr.ece.jbomb.model.Plateau.PLAYER2;
-import static com.fr.ece.jbomb.model.Plateau.PLAYER3;
-import static com.fr.ece.jbomb.model.Plateau.PLAYER4;
 import static com.fr.ece.jbomb.model.Plateau.SOL;
 import static com.fr.ece.jbomb.view.Direction.EST;
 import static com.fr.ece.jbomb.view.Direction.NORD;
@@ -22,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.fr.ece.jbomb.model.Plateau;
 import com.fr.ece.jbomb.view.Direction;
 
 public class ConfFromServer implements Serializable {
@@ -33,6 +29,7 @@ public class ConfFromServer implements Serializable {
 	private List<Player> listPlayer;
 	private Plateau plateau[][];
 	private transient Map<Plateau, Point> playerByCoordinates;
+	private String direction;
 
 	public ConfFromServer() {
 		
@@ -239,6 +236,7 @@ public class ConfFromServer implements Serializable {
 
 		if (confToServer.getKeyList().contains("RIGHT")) {
 			System.out.println("RIGHT");
+			direction = "RIGHT";
 			player.setDirectionPourSavoirQuelleImageAfficher("RIGHT");
 			if (!onPressedRight(player)) {
 				player.move(1, 0);
@@ -248,6 +246,7 @@ public class ConfFromServer implements Serializable {
 
 		if (confToServer.getKeyList().contains("LEFT")) {
 			System.out.println("LEFT");
+			direction = "LEFT";
 			player.setDirectionPourSavoirQuelleImageAfficher("LEFT");
 			if (!onPressedLeft(player)) {
 				player.move(-1, 0);
@@ -257,6 +256,7 @@ public class ConfFromServer implements Serializable {
 		}
 		if (confToServer.getKeyList().contains("UP")) {
 			System.out.println("UP");
+			direction = "UP";
 			player.setDirectionPourSavoirQuelleImageAfficher("UP");
 			if (!onPressedUp(player)) {
 				player.move(0, -1);
@@ -266,6 +266,7 @@ public class ConfFromServer implements Serializable {
 
 		if (confToServer.getKeyList().contains("DOWN")) {
 			System.out.println("DOWN");
+			direction = "DOWN";
 			player.setDirectionPourSavoirQuelleImageAfficher("DOWN");
 			if (!onPressedDown(player)) {
 				player.move(0, 1);
@@ -276,7 +277,6 @@ public class ConfFromServer implements Serializable {
 		return this;
 	}
 
-	//CHANGER LE NOM il c'est pas une fonction qui fait que printer !!!! example update
 	private void update_array_plateau() {
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
@@ -295,6 +295,340 @@ public class ConfFromServer implements Serializable {
 		}
 	}
 
+	///////////////////////////////// Check Collision
+	
+
+	public Sprite createNeighborSprite(int positionRow_neighbor, int positionCol_neighbor) {
+
+		// Coordonnes en pixels du voisin
+		int coordinateX_neigborPixel = (positionCol_neighbor + 1) * 32;
+		int coordinateY_neighboPixel = (positionRow_neighbor + 1) * 32;
+
+		// Sprite Voisin
+		Sprite neighbor;
+
+		switch (plateau[positionRow_neighbor][positionCol_neighbor]) {
+		case SOL:
+		case MUR:
+		case PILIER:
+			neighbor = new Decor(coordinateX_neigborPixel, coordinateY_neighboPixel, 32, 32);
+			break;
+		case BOMBE:
+			neighbor = new Decor(coordinateX_neigborPixel, coordinateY_neighboPixel, 32, 32);
+			break;
+		default:
+			neighbor = new Player(coordinateX_neigborPixel, coordinateY_neighboPixel, 32,32);
+			break;
+		}
+
+		return neighbor;
+	}
+
+	/////////////////////////////////////////////////////////////// Check neighbors
+	public int checkFourNeighbor(int row, int col, Sprite player,Direction direction){
+		int nb_intersections = 0;
+		
+		switch(direction){
+			case NORD:
+			case SUD:
+				if(col-1 >= 0){
+					Sprite neighborEast = createNeighborSprite(row, col-1);
+					neighborEast.setWidth(27);
+					if(player.intersects(neighborEast)){
+						System.out.print("E ");
+						nb_intersections++;
+					}
+				}
+				
+				if(col+1 < 23){
+					Sprite neighborWest = createNeighborSprite(row,col+1);
+					neighborWest.setWidth(27);
+					if(player.intersects(neighborWest)){
+						System.out.print("W ");
+						nb_intersections++;
+					}
+				}
+				break;
+			case EST:
+			case OUEST:
+				if(row-1 >= 0){
+					Sprite neighborNorth = createNeighborSprite(row-1,col);
+					neighborNorth.setHeight(30);
+					if(player.intersects(neighborNorth)){
+						System.out.print("N ");
+						nb_intersections++;
+					}
+				}
+				
+				if(row+1 < 17){
+					Sprite neighborSouth = createNeighborSprite(row+1, col);
+					neighborSouth.setHeight(30);
+					if(player.intersects(neighborSouth)){
+						System.out.print("S ");
+						nb_intersections++;
+					}
+				}
+				
+				break;
+		}
+		
+		System.out.println("N°inter " + nb_intersections);
+		return nb_intersections;
+	}
+	
+	////////////////////////////////// Check fences
+	private boolean exceed_fences(Player player, Direction direction) {
+		switch (direction) {
+		case EST:
+			if ((player.getPositionX() + 32) + 1 < (LARGEUR_PLATEAU.getValeur() - 32)) {
+				return false;
+			}
+			break;
+		case OUEST:
+
+			if ((player.getPositionX()) - 1 > 32) {
+				return false;
+			}
+			break;
+		case NORD:
+
+			if ((player.getPositionY()) - 1 > 32) {
+				return false;
+			}
+			break;
+
+		case SUD:
+			if ((player.getPositionY() + 32) + 1 < (LONGUEUR_PLATEAU.getValeur() - 32)) {
+				return false;
+			}
+			break;
+		}
+		return true;
+	}
+
+	
+	public boolean is_any_collision(Player player1, Direction direction) {
+
+		// Coordonnes x,y du joueur dans le tableau tab[][]
+		int positionRow_player = playerByCoordinates.get(PLAYER1).x;
+		int positionCol_player = playerByCoordinates.get(PLAYER1).y;
+
+		int nb_intersections = 0;
+		int positionRow_neighbor;
+		int positionCol_neighbor;
+		
+		// Sprite representing the neighbor
+		Sprite neighbor;
+
+		switch (direction) {
+		case NORD:
+
+			// Coordonnes x,y du voisin dans le tableau tab[][]
+			positionRow_neighbor = positionRow_player - 1;
+			positionCol_neighbor = positionCol_player;
+
+			System.out.println("Position Row Neighbor " + positionRow_neighbor + " Position Col Neighbor " + positionCol_neighbor);
+
+			if (positionRow_neighbor >= 0) {
+				
+				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
+
+				// Simulation
+				player1.move(0, -1);
+
+				System.out.println("SIMU DONE");
+				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				
+				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,NORD);
+				// Conditions : Vérification des collisions
+				if (player1.intersects(neighbor) && nb_intersections == 0){
+					System.out.println("Mono intersection ");
+					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
+						int min = (positionRow_neighbor + 1) * 32;
+						int max = (positionRow_neighbor + 2) * 32;
+						System.out.println("Min : " + min + " Max : " + max);
+						if (min <= player1.getPositionY() + 16 && player1.getPositionY() + 16 <= max) {
+							System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(PLAYER1, new Point(positionRow_player - 1, positionCol_player));
+							plateau[positionRow_player][positionCol_player] = SOL;
+							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+						}
+
+						return false;
+					} else {
+						System.out.println("NO SOL");
+						player1.move(0, +1);
+						return true;
+					}
+				}else if((player1.intersects(neighbor) && nb_intersections > 0)){
+					System.out.println("Multi intersections");
+					player1.move(0, +1);
+					return true;
+				}
+			}else if(positionRow_neighbor == -1){
+				if (player1.getPositionY() >= 0){
+					return false;
+				}
+					player1.move(0, +1); // cancel le mov
+					return true;
+			}
+			System.out.println("NNNNN");
+			return false; 
+		case SUD:
+			
+			// Coordonnes x,y du voisin dans le tableau tab[][]
+			positionRow_neighbor = positionRow_player + 1;
+			positionCol_neighbor = positionCol_player;
+
+			if (positionRow_neighbor < 17) {
+				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
+
+				// Simulation
+				player1.move(0, +1);
+				System.out.println("SIMU DONE");
+				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				
+				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,SUD);
+				
+				// Conditions : Vérification des collisions
+				if (player1.intersects(neighbor) && nb_intersections == 0){
+					System.out.println("Only one neighbor ");
+					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
+						int min = (positionRow_neighbor + 1) * 32;
+						int max = (positionRow_neighbor + 2) * 32;
+						System.out.println("Min : " + min + " Max : " + max);
+						if (min <= player1.getPositionY() + 16 && player1.getPositionY() + 16 <= max) {
+							System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(PLAYER1, new Point(positionRow_player + 1, positionCol_player));
+							plateau[positionRow_player][positionCol_player] = SOL;
+							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+						}
+	
+						return false;
+						} else {
+							System.out.println("NO SOL");
+							player1.move(0, -1);
+							return true;
+						}
+				}else if(player1.intersects(neighbor) && nb_intersections > 0){
+					player1.move(0, -1);
+					return true;
+				}	
+			}else if(positionRow_neighbor == 17){
+				if (player1.getPositionY() + 32 <= Plateau.LONGUEUR_PLATEAU.getValeur()-32) {
+					return false;
+				}
+					player1.move(0, -1); // cancel le mov
+					return true;
+			}
+			System.out.println("SSSSS");
+			return false; // s'il n'y a aucne intersection
+		case EST:
+			// Coordonnes x,y du voisin dans le tableau tab[][]
+			positionRow_neighbor = positionRow_player;
+			positionCol_neighbor = positionCol_player + 1;
+
+			if (positionCol_neighbor < 23) {
+				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
+				System.out.println("SIMU DONE");
+				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				
+				
+				// Simulation
+				player1.move(+1, 0);
+
+				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,EST);
+
+				// Conditions : Vérification des collisions
+				if (player1.intersects(neighbor) && nb_intersections == 0){
+					System.out.println("Only one neighbor ");
+					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
+						int min = (positionCol_neighbor + 1) * 32;
+						int max = (positionCol_neighbor + 2) * 32;
+						System.out.println("Min : " + min + " Max : " + max);
+						if (min <= player1.getPositionX() + 16 && player1.getPositionX() + 16 <= max) {
+							System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player + 1));
+							plateau[positionRow_player][positionCol_player] = SOL;
+							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+						}
+
+						return false;
+					} else {
+						System.out.println("NO SOL");
+						player1.move(-1, 0);
+						return true;
+					}
+				}else if(player1.intersects(neighbor) && nb_intersections > 0){
+					player1.move(-1, 0);
+					return true;
+				}
+			}else if (positionCol_neighbor == 23) {
+				if (player1.getPositionX() + 32 <= Plateau.LARGEUR_PLATEAU.getValeur()) {
+					return false;
+				}
+				player1.move(-1, 0); // cancel le mov
+				return true;
+			}
+			System.out.println("EEEEEE");
+			return false; // s'il n'y a aucne intersection
+			
+		case OUEST:
+			// Coordonnes x,y du voisin dans le tableau tab[][]
+			positionRow_neighbor = positionRow_player;
+			positionCol_neighbor = positionCol_player - 1;
+
+			if (positionCol_neighbor >= 0) {
+				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
+				System.out.println("SIMU DONE");
+				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				
+				// Simulation
+				player1.move(-1, 0);
+
+				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,OUEST);
+
+				// Conditions : Vérification des collisions
+				if (player1.intersects(neighbor) && nb_intersections == 0) {
+					System.out.println("Only one neighbor ");
+					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
+						int min = (positionCol_neighbor + 1) * 32;
+						int max = (positionCol_neighbor + 2) * 32;
+						System.out.println("Min : " + min + " Max : " + max);
+						if (min <= player1.getPositionX() + 16 && player1.getPositionX() + 16 <= max) {
+							System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player - 1));
+							plateau[positionRow_player][positionCol_player] = SOL;
+							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+							return false;
+						}
+					} else {
+							System.out.println("NO SOL");
+							player1.move(+1, 0);
+							return true;
+					}
+					
+				 }else if(player1.intersects(neighbor) && nb_intersections > 0){
+						player1.move(+1, 0);
+						return true;
+				 }
+			}else if (positionCol_neighbor == -1) {
+				if (player1.getPositionX() >= 0){return false;}
+				player1.move(+1, 0); // cancel le mov
+				return true;
+			}
+		}	
+		System.out.println("FFFFF");
+		return false;
+	}
+	
+	//////////////////////////////////////////////////////////////////// End check Collsion
+	
+	
 	private boolean onPressedRight(Player player) {
 
 		System.out.println(player.getPositionX() + " " + player.getPositionY());
@@ -331,256 +665,5 @@ public class ConfFromServer implements Serializable {
 		return is_any_collision(player, SUD);
 	}
 
-	private boolean exceed_fences(Player player, Direction direction) {
-		switch (direction) {
-		case EST:
-			if ((player.getPositionX() + 32) + 1 < (LARGEUR_PLATEAU.getValeur() - 32)) {
-				return false;
-			}
-			break;
-		case OUEST:
-
-			if ((player.getPositionX()) - 1 > 32) {
-				return false;
-			}
-			break;
-		case NORD:
-
-			if ((player.getPositionY()) - 1 > 32) {
-				return false;
-			}
-			break;
-
-		case SUD:
-			if ((player.getPositionY() + 32) + 1 < (LONGUEUR_PLATEAU.getValeur() - 32)) {
-				return false;
-			}
-			break;
-		}
-		return true;
-	}
-
-	public Sprite createNeighborSprite(int positionRow_neighbor, int positionCol_neighbor) {
-
-		// Coordonnes en pixels du voisin
-		int coordinateX_neigborPixel = (positionCol_neighbor + 1) * 32;
-		int coordinateY_neighboPixel = (positionRow_neighbor + 1) * 32;
-
-		// Sprite Voisin
-		Sprite neighbor;
-
-		switch (plateau[positionRow_neighbor][positionCol_neighbor]) {
-		case SOL:
-		case MUR:
-		case PILIER:
-			neighbor = new Decor(coordinateX_neigborPixel, coordinateY_neighboPixel, 32, 32);
-			break;
-		case BOMBE:
-			neighbor = new Decor(coordinateX_neigborPixel, coordinateY_neighboPixel, 16, 16);
-			break;
-		default:
-			neighbor = new Player(coordinateX_neigborPixel, coordinateY_neighboPixel, 16, 16);
-			break;
-		}
-
-		return neighbor;
-	}
-
-	private boolean is_any_collision(Player player, Direction direction) {
-
-		// Coordonnes x,y du joueur dans le tableau tab[][]
-		int positionRow_player = playerByCoordinates.get(PLAYER1).x;
-		int positionCol_player = playerByCoordinates.get(PLAYER1).y;
-
-		//
-		int positionRow_neighbor;
-		int positionCol_neighbor;
-
-		// Sprite representing the neighbor
-		Sprite neighbor;
-
-		switch (direction) {
-		case NORD:
-
-			// Coordonnes x,y du voisin dans le tableau tab[][]
-			positionRow_neighbor = positionRow_player - 1;
-			positionCol_neighbor = positionCol_player;
-
-			// Bombe : (16pixels,16pixels) en (longueur,largeur)
-			// Sol ou Pilier (32pixels,32pixels) en
-			// (longpositionRow_neighborueur,largeur)
-			System.out.println(
-					"Position Row Neighbor " + positionRow_neighbor + " Position Col Neighbor " + positionCol_neighbor);
-
-			if (positionRow_neighbor >= 0) {
-				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-
-				// Simulation
-				player.move(0, -1);
-
-				System.out.println("SIMU DONE");
-				System.out.println("PLAYER1 COORDINATE IN PX : " + player.getPositionX() + " " + player.getPositionY());
-				System.out.println(
-						"NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
-				// Conditions : Vérification des collisions
-				if (neighbor.intersects(player)) {
-					System.out.println("INTERSECTION");
-					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
-						int min = (positionRow_neighbor + 1) * 32;
-						int max = (positionRow_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player.getPositionY() + 16 && player.getPositionY() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player - 1, positionCol_player));
-							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
-						}
-
-						return false;
-					} else {
-						System.out.println("NO SOL");
-						player.move(0, +1);
-
-						return true;
-					}
-				} else {
-					System.out.println("NO INTERSECTION");
-					return false; // Le joueur avance d'un pixel dans sa case de
-									// départ
-				}
-			}
-
-		case SUD:
-			// Coordonnes x,y du voisin dans le tableau plateau[][]
-			positionRow_neighbor = positionRow_player + 1;
-			positionCol_neighbor = positionCol_player;
-
-			if (positionRow_neighbor < 17) {
-				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-
-				// Simulation
-				player.move(0, +1);
-
-				// Conditions : Vérification des collisions
-				if (neighbor.intersects(player)) {
-					System.out.println("INTERSECTION");
-					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
-						int min = (positionRow_neighbor + 1) * 32;
-						int max = (positionRow_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player.getPositionY() + 16 && player.getPositionY() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player + 1, positionCol_player));
-							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
-						}
-
-						return false;
-					} else {
-						System.out.println("NO SOL");
-						player.move(0, -1);
-						return true;
-					}
-				} else {
-					System.out.println("NO INTERSECTION");
-					return false; // Le joueur avance d'un pixel dans sa case de
-									// départ
-				}
-			} else if (positionRow_neighbor == 17) {
-				player.move(0, +1);
-				if (player.getPositionY() + 16 <= Plateau.LONGUEUR_PLATEAU.getValeur()) {
-					return false;
-				}
-				player.move(0, -1); // cancel le mov
-				return true;
-			}
-		case EST:
-			// Coordonnes x,y du voisin dans le tableau plateau[][]
-			positionRow_neighbor = positionRow_player;
-			positionCol_neighbor = positionCol_player + 1;
-
-			if (positionCol_neighbor < 23) {
-				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-
-				// Simulation
-				player.move(+1, 0);
-
-				// Conditions : Vérification des collisions
-				if (neighbor.intersects(player)) {
-					System.out.println("INTERSECTION");
-					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
-						int min = (positionCol_neighbor + 1) * 32;
-						int max = (positionCol_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player.getPositionX() + 16 && player.getPositionX() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player + 1));
-							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
-						}
-
-						return false;
-					} else {
-						System.out.println("NO SOL");
-						player.move(-1, 0);
-						return true;
-					}
-				} else {
-					System.out.println("NO INTERSECTION");
-					return false; // Le joueur avance d'un pixel dans sa case de
-									// départ
-				}
-			} else if (positionCol_neighbor == 23) {
-				player.move(+1, 0);
-				if (player.getPositionX() + 16 <= Plateau.LARGEUR_PLATEAU.getValeur()) {
-					return false;
-				}
-				player.move(-1, 0); // cancel le mov
-				return true;
-			}
-
-		case OUEST:
-			// Coordonnes x,y du voisin dans le tableau plateau[][]
-			positionRow_neighbor = positionRow_player;
-			positionCol_neighbor = positionCol_player - 1;
-
-			if (positionCol_neighbor >= 0) {
-				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-
-				// Simulation
-				player.move(-1, 0);
-
-				// Conditions : Vérification des collisions
-				if (neighbor.intersects(player)) {
-					System.out.println("INTERSECTION");
-					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
-						int min = (positionCol_neighbor + 1) * 32;
-						int max = (positionCol_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player.getPositionX() + 16 && player.getPositionX() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player - 1));
-							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
-						}
-
-						return false;
-					} else {
-						System.out.println("NO SOL");
-						player.move(+1, 0);
-						return true;
-					}
-				} else {
-					System.out.println("NO INTERSECTION");
-					return false; // Le joueur avance d'un pixel dans sa case de
-									// départ
-				}
-			}
-		}
-
-		return true;
-
-	}
-
-
+	
 }
