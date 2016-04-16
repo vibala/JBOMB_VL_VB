@@ -66,7 +66,7 @@ public class GUI extends AbstractView {
 					decor.setImage(pilier);
 					decor.setPositionX((j + 1) * 32);
 					decor.setPositionY((i + 1) * 32);
-					decor.setWidth(32);
+					decor.setWidth(24);
 					decor.setHeight(32);
 					plateau_sprites[i][j] = decor;
 					gc1.drawImage(decor.getImage(), decor.getPositionX(), decor.getPositionY());
@@ -80,7 +80,7 @@ public class GUI extends AbstractView {
 					decor.setPositionY((i + 1) * 32);
 					decor.setWidth(32);
 					decor.setHeight(32);
-					gc2.drawImage(decor.getImage(), decor.getPositionX(), decor.getPositionY());
+					gc1.drawImage(decor.getImage(), decor.getPositionX(), decor.getPositionY());
 					break;
 				case PLAYER1:
 					player1 = new Player((j + 1) * 32, (i + 1) * 32, 32, 32);

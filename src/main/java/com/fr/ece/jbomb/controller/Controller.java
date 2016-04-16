@@ -138,42 +138,129 @@ public class Controller implements GUIListener {
 		int nb_intersections = 0;
 		
 		switch(direction){
-			case NORD:
 			case SUD:
-				if(col-1 >= 0){
-					Sprite neighborEast = createNeighborSprite(row, col-1);
-					neighborEast.setWidth(27);
+				if(row+1 < 17 && col-1 >= 0){
+					Sprite neighborEast = createNeighborSprite(row+1, col-1);
+					
 					if(player.intersects(neighborEast)){
 						System.out.print("E ");
 						nb_intersections++;
 					}
+					
+					neighborEast = createNeighborSprite(row, col-1);
+					if(player.intersects(neighborEast)){
+						System.out.print("E ");
+						nb_intersections++;
+					}
+							
 				}
 				
-				if(col+1 < 23){
-					Sprite neighborWest = createNeighborSprite(row,col+1);
-					neighborWest.setWidth(27);
+				if(row+1 < 17 && col+1 < 23){
+					Sprite neighborWest = createNeighborSprite(row+1,col+1);
+					
 					if(player.intersects(neighborWest)){
 						System.out.print("W ");
+						nb_intersections++;
+					}
+					
+					neighborWest = createNeighborSprite(row, col+1);
+					if(player.intersects(neighborWest)){
+						System.out.print("W");
+						nb_intersections++;
+					}
+				}
+				
+				
+				break;
+			case NORD:
+				if(row-1 >= 0 && col-1 >= 0){
+					Sprite neighborEast = createNeighborSprite(row-1, col-1);
+					
+					if(player.intersects(neighborEast)){
+						System.out.print("East Collision ");
+						nb_intersections++;
+					}
+					
+					neighborEast = createNeighborSprite(row, col-1);
+					if(player.intersects(neighborEast)){
+						System.out.print("East Collision ");
+						nb_intersections++;
+					}
+				}
+				
+				if(row-1 >= 0 && col+1 < 23){
+					Sprite neighborWest = createNeighborSprite(row-1,col+1);
+					
+					if(player.intersects(neighborWest)){
+						System.out.print("West Collision");
+						nb_intersections++;
+					}
+					
+					neighborWest = createNeighborSprite(row, col+1);
+					if(player.intersects(neighborWest)){
+						System.out.print("West Collision");
 						nb_intersections++;
 					}
 				}
 				break;
 			case EST:
-			case OUEST:
-				if(row-1 >= 0){
-					Sprite neighborNorth = createNeighborSprite(row-1,col);
-					neighborNorth.setHeight(30);
+				if(row-1 >= 0 && col+1 < 23){
+					Sprite neighborNorth = createNeighborSprite(row-1,col+1);
+					
 					if(player.intersects(neighborNorth)){
-						System.out.print("N ");
+						System.out.print("Nord Collision ");
+						nb_intersections++;
+					}
+					
+					neighborNorth = createNeighborSprite(row-1, col);
+					if(player.intersects(neighborNorth)){
+						System.out.print("Nord Collision ");
 						nb_intersections++;
 					}
 				}
 				
-				if(row+1 < 17){
-					Sprite neighborSouth = createNeighborSprite(row+1, col);
-					neighborSouth.setHeight(30);
+				if(row+1 < 17 && col+1 < 23){
+					Sprite neighborSouth = createNeighborSprite(row+1, col+1);
 					if(player.intersects(neighborSouth)){
-						System.out.print("S ");
+						System.out.print("Sud Collision ");
+						nb_intersections++;
+					}
+					
+					neighborSouth = createNeighborSprite(row+1, col);
+					if(player.intersects(neighborSouth)){
+						System.out.print("Nord Collision ");
+						nb_intersections++;
+					}
+				}
+				
+				break;
+			case OUEST:
+				if(row-1 >= 0 && col-1 >= 0){
+					Sprite neighborNorth = createNeighborSprite(row-1,col-1);
+					
+					if(player.intersects(neighborNorth)){
+						System.out.print("Nord Collision ");
+						nb_intersections++;
+					}
+					
+					neighborNorth = createNeighborSprite(row-1, col);
+					if(player.intersects(neighborNorth)){
+						System.out.print("Nord Collision ");
+						nb_intersections++;
+					}
+				}
+				
+				if(row+1 < 17 && col-1 >=0 ){
+					Sprite neighborSouth = createNeighborSprite(row+1, col-1);
+					
+					if(player.intersects(neighborSouth)){
+						System.out.print("Sud Collision ");
+						nb_intersections++;
+					}
+					
+					neighborSouth = createNeighborSprite(row+1, col);
+					if(player.intersects(neighborSouth)){
+						System.out.print("Nord Collision ");
 						nb_intersections++;
 					}
 				}
@@ -219,9 +306,9 @@ public class Controller implements GUIListener {
 				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,NORD);
-				// Conditions : Vérification des collisions
+				// conditions : Vérification des collisions
 				if (player1.intersects(neighbor) && nb_intersections == 0){
-					System.out.println("Mono intersection ");
+					System.out.println("Mono collision ");
 					if (tab[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
@@ -239,8 +326,8 @@ public class Controller implements GUIListener {
 						player1.move(0, +1);
 						return true;
 					}
-				}else if((player1.intersects(neighbor) && nb_intersections > 0)){
-					System.out.println("Multi intersections");
+				}else if(player1.intersects(neighbor) && nb_intersections != 0){
+					System.out.println("Poly collision ");
 					player1.move(0, +1);
 					return true;
 				}
@@ -268,11 +355,11 @@ public class Controller implements GUIListener {
 				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
 				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
-				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,SUD);
+				//nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,SUD);
 				
 				// Conditions : Vérification des collisions
 				if (player1.intersects(neighbor) && nb_intersections == 0){
-					System.out.println("Only one neighbor ");
+					System.out.println("Mono collision ");
 					if (tab[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
@@ -290,10 +377,11 @@ public class Controller implements GUIListener {
 							player1.move(0, -1);
 							return true;
 						}
-				}else if(player1.intersects(neighbor) && nb_intersections > 0){
+				}else if(player1.intersects(neighbor) && nb_intersections != 0){
+					System.out.println("Poly collision ");
 					player1.move(0, -1);
 					return true;
-				}	
+				}
 			}else if(positionRow_neighbor == 17){
 				if (player1.getPositionY() + 32 <= Plateau.LONGUEUR_PLATEAU.getValeur()-32) {
 					return false;
@@ -303,17 +391,20 @@ public class Controller implements GUIListener {
 			}
 			System.out.println("SSSSS");
 			return false; // s'il n'y a aucne intersection
+			
+		/*********************************************************************************************************/
+		/*********************************************************************************************************/
+			
 		case EST:
 			// Coordonnes x,y du voisin dans le tableau tab[][]
 			positionRow_neighbor = positionRow_player;
 			positionCol_neighbor = positionCol_player + 1;
 
-			if (positionCol_neighbor < 23) {
+			if (positionCol_neighbor < 23 && positionRow_player + 1 < 17) {
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
 				System.out.println("SIMU DONE");
 				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
 				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
-				
 				
 				// Simulation
 				player1.move(+1, 0);
@@ -322,25 +413,25 @@ public class Controller implements GUIListener {
 
 				// Conditions : Vérification des collisions
 				if (player1.intersects(neighbor) && nb_intersections == 0){
-					System.out.println("Only one neighbor ");
+					System.out.println("Mono collision");
 					if (tab[positionRow_neighbor][positionCol_neighbor] == SOL) {
-						int min = (positionCol_neighbor + 1) * 32;
-						int max = (positionCol_neighbor + 2) * 32;
+						int min =  (positionCol_neighbor + 1) * 32;
+						int max =  (positionCol_neighbor + 2) * 32;
 						System.out.println("Min : " + min + " Max : " + max);
-						if (min <= player1.getPositionX() + 16 && player1.getPositionX() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
+						if (min <= player1.getPositionX() + 16 && player1.getPositionX() + 16 <= max ) {
+							System.out.println("Le joueur change de position dans le plateau");
 							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player + 1));
 							tab[positionRow_player][positionCol_player] = SOL;
 							tab[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
-						}
-
-						return false;
+						}							
 					} else {
-						System.out.println("NO SOL");
-						player1.move(-1, 0);
+						System.out.println("Pas de sol détéecté");
+						player1.move(-1, 0); // cancel le mouvement
 						return true;
 					}
-				}else if(player1.intersects(neighbor) && nb_intersections > 0){
+				// Le joueur rencontre multiple collisions (supposons tonneau + arbre)
+				}else if(player1.intersects(neighbor) && nb_intersections != 0){
+					System.out.println("Poly collisions");
 					player1.move(-1, 0);
 					return true;
 				}
@@ -348,11 +439,14 @@ public class Controller implements GUIListener {
 				if (player1.getPositionX() + 32 <= Plateau.LARGEUR_PLATEAU.getValeur()) {
 					return false;
 				}
-				player1.move(-1, 0); // cancel le mov
+				player1.move(-1, 0); // cancel le mouvement
 				return true;
 			}
 			System.out.println("EEEEEE");
-			return false; // s'il n'y a aucne intersection
+			return false; // Si le joueur n'a rencontré aucune collision
+			
+		/***********************************************************************************************************/
+		/***********************************************************************************************************/
 			
 		case OUEST:
 			// Coordonnes x,y du voisin dans le tableau tab[][]
@@ -372,7 +466,7 @@ public class Controller implements GUIListener {
 
 				// Conditions : Vérification des collisions
 				if (player1.intersects(neighbor) && nb_intersections == 0) {
-					System.out.println("Only one neighbor ");
+					System.out.println("Mono collision");
 					if (tab[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionCol_neighbor + 1) * 32;
 						int max = (positionCol_neighbor + 2) * 32;
@@ -382,7 +476,7 @@ public class Controller implements GUIListener {
 							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player - 1));
 							tab[positionRow_player][positionCol_player] = SOL;
 							tab[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
-							return false;
+						
 						}
 					} else {
 							System.out.println("NO SOL");
@@ -390,10 +484,12 @@ public class Controller implements GUIListener {
 							return true;
 					}
 					
-				 }else if(player1.intersects(neighbor) && nb_intersections > 0){
+				 // Le joueur rencontre multiple collisions (supposons tonneau + arbre)
+				}else if(player1.intersects(neighbor) && nb_intersections != 0){
+						System.out.println("Poly collisions");
 						player1.move(+1, 0);
 						return true;
-				 }
+				}
 			}else if (positionCol_neighbor == -1) {
 				if (player1.getPositionX() >= 0){return false;}
 				player1.move(+1, 0); // cancel le mov

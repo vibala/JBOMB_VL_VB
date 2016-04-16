@@ -34,8 +34,12 @@ public abstract class Sprite {
 		return new Rectangle2D(positionX, positionY, width, height);
 	}
 
+	public Rectangle2D getBoundaryDecor(){
+		return new Rectangle2D(positionX+4, positionY+4, 24, 24);
+	}
+	
 	public boolean intersects(Sprite s) {
-		return s.getBoundary().intersects(this.getBoundary());
+		return s.getBoundaryDecor().intersects(this.getBoundary());
 	}
 	/*
 	sprite: tab

@@ -22,7 +22,7 @@ public class ServerTest {
 	public ServerTest() {
 		this.plateau = new Plateau[17][23];
 		ajout_piliers_sols();
-		ajout_murs();
+		//ajout_murs();
 		ajout_players();
 	}
 
