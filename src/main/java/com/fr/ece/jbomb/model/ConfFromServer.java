@@ -45,9 +45,8 @@ public class ConfFromServer implements Serializable {
 		ajout_murs();
 		ajout_players();
 		
-		print_array_plateau();
+		update_array_plateau();
 	}
-	
 	
 	// -------------------Fonction appelé côté CLIENT
 
@@ -228,8 +227,6 @@ public class ConfFromServer implements Serializable {
 		System.out.println("ajout_murs : Sortie");
 	}
 	
-	
-	
 	// -------------------Fonction appelé côté SERVER
 
 	public void addPlayer(Player p) {
@@ -245,6 +242,7 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("RIGHT");
 			if (!onPressedRight(player)) {
 				player.move(1, 0);
+				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 		}
 
@@ -253,6 +251,7 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("LEFT");
 			if (!onPressedLeft(player)) {
 				player.move(-1, 0);
+				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 
 		}
@@ -261,6 +260,7 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("UP");
 			if (!onPressedUp(player)) {
 				player.move(0, -1);
+				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 		}
 
@@ -269,6 +269,7 @@ public class ConfFromServer implements Serializable {
 			player.setDirectionPourSavoirQuelleImageAfficher("DOWN");
 			if (!onPressedDown(player)) {
 				player.move(0, 1);
+				listPlayer.add(confToServer.idPlayer - 1, player);
 			}
 
 		}
@@ -276,7 +277,7 @@ public class ConfFromServer implements Serializable {
 	}
 
 	//CHANGER LE NOM il c'est pas une fonction qui fait que printer !!!! example update
-	private void print_array_plateau() {
+	private void update_array_plateau() {
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
 				switch (plateau[i][j]) {
