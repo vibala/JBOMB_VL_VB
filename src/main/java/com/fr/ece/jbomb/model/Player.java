@@ -32,7 +32,7 @@ public class Player extends Sprite implements Move,Serializable{
 		return directionPourSavoirQuelleImageAfficher;
 	}
 	public void setDirectionPourSavoirQuelleImageAfficher(String s){
-	 directionPourSavoirQuelleImageAfficher=s;
+		     directionPourSavoirQuelleImageAfficher=s;
 	}
 	 //Que Côté SERVER
 	 public void move(double deltaX,double deltaY) {
