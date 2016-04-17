@@ -72,7 +72,7 @@ public class ConnectionHandler implements Runnable {
 		} catch (ClassNotFoundException e) {
 		}finally{
 			System.out.println("Le joueur s'est déconnecté");
-			 System.out.println("La connexion est maintenant terminée pour le client :"+player.getID());
+			 System.out.println("La connexion est maintenant terminée pour le client "+player.getID());
 			 Server.updateDisconnectedPlayer(player.getID());
 				try {
 					socketServerforClient.close();
