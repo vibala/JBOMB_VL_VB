@@ -8,9 +8,9 @@ import java.util.List;
 
 import com.fr.ece.jbomb.model.ConfFromServer;
 import com.fr.ece.jbomb.model.ConfToServer;
-import com.fr.ece.jbomb.model.Decor;
 import com.fr.ece.jbomb.model.Plateau;
 import com.fr.ece.jbomb.model.Player;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,10 +20,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class GUI extends AbstractView {
-	private Player player1;
-	private Player player2;
-	private Player player3;
-	private Player player4;
 	private GraphicsContext gc1;
 	private GraphicsContext gc2;
 
@@ -34,11 +30,11 @@ public class GUI extends AbstractView {
 	private ConfToServer configClient;
 
 	public int getIdFromDirection(String direction) {
-		if (direction == "RIGHT") {
+		if (direction.contains("RIGHT")) {
 			return 3;
-		} else if (direction == "LEFT") {
+		} else if (direction.contains("LEFT")) {
 			return 2;
-		} else if (direction == "UP") {
+		} else if (direction.contains("UP")) {
 			return 4;
 		}
 		return 1;
@@ -56,28 +52,20 @@ public class GUI extends AbstractView {
 
 			switch(player.getID()){
 					case 1:
-						player1 = new Player(1, player.getPositionX(),player.getPositionY(), 32,32);
-						image_joueur1.append(""+getIdFromDirection(player1.getDirectionPourSavoirQuelleImageAfficher())+".png");
-						player1.setImage(new Image(image_joueur1.toString()));
-						gc2.drawImage(player1.getImage(), player1.getPositionX(), player1.getPositionY());
+						image_joueur1.append(""+getIdFromDirection(player.getDirectionPourSavoirQuelleImageAfficher())+".png");
+						gc2.drawImage(new Image(image_joueur1.toString()), player.getPositionX(), player.getPositionY());
 						break;
 					case 2:
-						player2 = new Player(2, player.getPositionX(),player.getPositionY(), 32,32);
-						image_joueur2.append(""+getIdFromDirection(player2.getDirectionPourSavoirQuelleImageAfficher())+".png");
-						player2.setImage(new Image(image_joueur2.toString()));
-						gc2.drawImage(player2.getImage(), player2.getPositionX(), player2.getPositionY());
+						image_joueur2.append(""+getIdFromDirection(player.getDirectionPourSavoirQuelleImageAfficher())+".png");
+						gc2.drawImage(new Image(image_joueur2.toString()), player.getPositionX(), player.getPositionY());
 						break;
 					case 3:
-						player3 = new Player(3, player.getPositionX(),player.getPositionY(), 32,32);
-						image_joueur3.append(""+getIdFromDirection(player3.getDirectionPourSavoirQuelleImageAfficher())+".png");
-						player3.setImage(new Image(image_joueur3.toString()));
-						gc2.drawImage(player3.getImage(), player3.getPositionX(), player3.getPositionY());
+						image_joueur3.append(""+getIdFromDirection(player.getDirectionPourSavoirQuelleImageAfficher())+".png");
+						gc2.drawImage(new Image(image_joueur3.toString()), player.getPositionX(), player.getPositionY());
 						break;
 					case 4:
-						player4 = new Player(4,  player.getPositionX(),player.getPositionY(), 32,32);
-						image_joueur4.append(""+getIdFromDirection(player4.getDirectionPourSavoirQuelleImageAfficher())+".png");
-						player4.setImage(new Image(image_joueur4.toString()));
-						gc2.drawImage(player4.getImage(), player4.getPositionX(), player4.getPositionY());
+						image_joueur4.append(""+getIdFromDirection(player.getDirectionPourSavoirQuelleImageAfficher())+".png");
+						gc2.drawImage(new Image(image_joueur4.toString()), player.getPositionX(), player.getPositionY());
 						break;
 				
 					}
@@ -95,6 +83,9 @@ public class GUI extends AbstractView {
 		// Bombe
 		Image bombe = new Image("com/fr/ece/jbomb/view/Avatar/bomb.png");
 		
+		// Crame
+		Image crame = new Image("com/fr/ece/jbomb/view/Avatar/Fire.gif");
+				
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
 				switch (plateau[i][j]) {
@@ -107,6 +98,9 @@ public class GUI extends AbstractView {
 						break;
 					case BOMBE:
 						gc1.drawImage(bombe, (j + 1) * 32, (i + 1) * 32);
+						break;
+					case CRAME:
+						gc1.drawImage(crame, (j+1)*32, (i+1)*32);
 						break;
 					default:
 						break;

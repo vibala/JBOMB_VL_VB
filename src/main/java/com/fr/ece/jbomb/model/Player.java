@@ -7,7 +7,7 @@ public class Player extends Sprite implements Move,Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -5006553028893773200L;
 	private int idPlayer;
 	private String directionPourSavoirQuelleImageAfficher="DOWN";
 	private int bomb=1;
@@ -33,7 +33,7 @@ public class Player extends Sprite implements Move,Serializable{
 		return directionPourSavoirQuelleImageAfficher;
 	}
 	public void setDirectionPourSavoirQuelleImageAfficher(String s){
-		     directionPourSavoirQuelleImageAfficher=s;
+			 directionPourSavoirQuelleImageAfficher=s;
 	}
 	 //Que Côté SERVER
 	 public void move(double deltaX,double deltaY) {

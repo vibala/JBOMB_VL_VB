@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fr.ece.jbomb.controller.FireTimer;
 import com.fr.ece.jbomb.model.Bomb;
 import com.fr.ece.jbomb.model.ConfFromServer;
 import com.fr.ece.jbomb.model.ConfToServer;
@@ -21,7 +22,7 @@ public class Server {
 	private int nbMaxConnection;
 	private ServerSocket server;
 	public static Map<Point,Bomb> listBomb = new HashMap<Point,Bomb>();
-	
+	public static List<FireTimer> listFire = new ArrayList<FireTimer>();
 	private static List<ConnectionHandler> listConnectionHandler = new ArrayList<ConnectionHandler>(); // utile pour chat privée 
 	public static boolean endOftheGame=false;
 	
@@ -70,6 +71,7 @@ public class Server {
 		
 	}
 
+	
 	//Appelé dans les connectionHandler pour savoir si les 4 joueurs se sont connectés
 	public static List<ConnectionHandler> getListConnectionHandler(){
 		return listConnectionHandler;
@@ -95,7 +97,7 @@ public class Server {
 	//Cette méthode est appelé dans les connectionHandlers pour mettre à jour la conf dur le serveur
 	public static ConfFromServer updateConfFromServer(ConfToServer confToServer) {
 		   synchronized(JETON_CONF) {
-		return confFromServer.update(confToServer);
+			   	return confFromServer.update(confToServer);
 		   }
 	}
 }
