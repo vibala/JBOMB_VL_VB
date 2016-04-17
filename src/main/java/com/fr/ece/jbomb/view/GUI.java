@@ -28,7 +28,7 @@ public class GUI extends AbstractView {
 	private Canvas canvas2;
 	private ConfFromServer configServeur;
 	private ConfToServer configClient;
-
+	public static boolean endOfGame=false;
 	/**
 	 * Retourne l'identifiant de l'image du joueur en fonction de la direction 
 	 * @param direction Direction du joueur
@@ -191,9 +191,13 @@ public class GUI extends AbstractView {
 
 			public void handle(long currentNanoTime) {
 			
-				int t=Calendar.getInstance().get(Calendar.MILLISECOND);
+				try {	
+					int t=Calendar.getInstance().get(Calendar.MILLISECOND);
+				if(GUI.endOfGame) {
+					getController().getClient().close(); 
+					System.exit(1);
+				}
 			
-				try {
 					// On met a jour la config avec les touches saisies par
 					// l'utilisateur
 					configClient.update();

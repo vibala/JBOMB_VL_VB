@@ -137,4 +137,13 @@ public class Server {
 			   	return confFromServer.update(confToServer);
 		   }
 	}
+	/**
+	 * MEttre a jour les déconnexions des joueurs dans la conf
+	 * @param idPlayer
+	 */
+	public static void updateDisconnectedPlayer(int idPlayer) {
+		   synchronized(JETON_CONF) {
+		 confFromServer.updateDisconnectedPlayer(idPlayer);
+		   }
+	}
 }

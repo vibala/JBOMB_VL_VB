@@ -891,5 +891,23 @@ public class ConfFromServer implements Serializable {
 		}
 		return is_any_collision(player, SUD);
 	}
+	/**
+	 * Mettre a jour les joueurs qui se sont déconnectés
+	 * @param idPlayer
+	 */
+	public void updateDisconnectedPlayer(int idPlayer) {
+		listPlayer.get(idPlayer-1).setPositionX(-1000);
+		listPlayer.get(idPlayer-1).setPositionY(-1000);
+		for (int i = 0; i < 17; i++) {
+			for (int j = 0; j < 23; j++) {
+			
+					if(plateau[i][j] == Plateau.getNomByValeur(idPlayer))
+						{
+						plateau[i][j]=SOL;
+						return;
+						}
+			}
+		}
+	}
 
 }

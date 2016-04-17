@@ -126,5 +126,11 @@ public class Controller implements GUIListener {
 		gui.setController(this); // Initialisation du controleur cote vue
 		gui.start(canvas, canvas2, key); //
 	}
+	/**
+	 * Retourne le l'objet client du controller
+	 */
+public Client getClient() {
+	return moi;
+}
 
 }
