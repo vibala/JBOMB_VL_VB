@@ -12,21 +12,33 @@ import com.fr.ece.jbomb.controller.PrintWriterChat;
 import com.fr.ece.jbomb.model.ConfToServer;
 import com.fr.ece.jbomb.model.Player;
 
+/**
+ * Classe Thread gérant chaque connexion cliente
+ * @author Vignesh BALA && Vincent LIM
+ * @version 1.0
+ **/
 public class ConnectionHandler implements Runnable {
 
 	private Player player;
-
 	private Socket socketServerforClient;
 	private ObjectInputStreamChat ois;
 	private ObjectOutputStreamChat oos;
 	private BufferedReaderChat reader;
 	private PrintWriterChat writer;
 	
+	/**
+	 * Constructeur initialisant le joueur et le socket d'échange du serveur
+	 * @param socketServerforClient Socket d'échange
+	 * @param player Joueur
+	 **/
 	public ConnectionHandler(Socket socketServerforClient,Player player) {
 		this.socketServerforClient = socketServerforClient;
 		this.player=player;
 	}
 
+	/**
+	 * Implemente l'échange instantanée des données entre le client et le serveur
+	 **/
 	public void run() {
 		try {
 			//Init

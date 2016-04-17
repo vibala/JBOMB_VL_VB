@@ -15,20 +15,25 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
+/**
+ * Classe de la représentation du GUI 
+ * @author Vignesh BALA && Vincent LIM
+ * @version 1.0
+ **/
 public class GUI extends AbstractView {
 	private GraphicsContext gc1;
 	private GraphicsContext gc2;
-
 	private Canvas canvas;
 	private Canvas canvas2;
-
 	private ConfFromServer configServeur;
 	private ConfToServer configClient;
 
+	/**
+	 * Retourne l'identifiant de l'image du joueur en fonction de la direction 
+	 * @param direction Direction du joueur
+	 * @return id Identifiant du joueur
+	 **/
 	public int getIdFromDirection(String direction) {
 		if (direction.contains("RIGHT")) {
 			return 3;
@@ -41,7 +46,11 @@ public class GUI extends AbstractView {
 	}
 
 	
-	
+	/**
+	 * Place uniquement les joueurs sur le plateau 
+	 * @param plateau Plateau de jeu
+	 * @param listPlayer Liste des joueurs
+	 **/
 	private void drawPlayerPlateau(Plateau[][] plateau, List<Player> listPlayer){
 		StringBuilder image_joueur1 = new StringBuilder("com/fr/ece/jbomb/view/Avatar/P1-"); // com/fr/ece/jbomb/view/Avatar/P1-1.png
 		StringBuilder image_joueur2 = new StringBuilder("com/fr/ece/jbomb/view/Avatar/P2-");
@@ -71,7 +80,12 @@ public class GUI extends AbstractView {
 					}
 		}
 	}
-
+	
+	
+	/**
+	 * Place uniquement le décor(mur,pilier,bombe,feu) sur le plateau 
+	 * @param plateau Plateau de jeu	 *
+	 **/
 	private void drawDecorPlateau(Plateau[][] plateau){
 		
 		/* Initialisation des images */
@@ -109,8 +123,11 @@ public class GUI extends AbstractView {
 		}
 	}
 
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!A MODIFIER POUR prendre
-	// en compte la listePlayer !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	/**
+	 * Coordonne les étapes de construction du plateau de jeu 
+	 * @param plateau Plateau de jeu
+	 * @param listPlayer Liste des joueurs
+	 **/
 	private void initPlateauSprite(Plateau[][] plateau, List<Player> listPlayer) {
 		System.out.println("initPlateauSprite : debut");
 
@@ -133,17 +150,11 @@ public class GUI extends AbstractView {
 		System.out.println("initPlateauSprite : fin");
 	}
 	
+	/**
+	 * Place les barrières et le sol sur le plateau 
+	 * 
+	 **/
 	private void initFrontierePlateauSprite() {
-
-		//System.out.println("initFrontierePlateauSprite");
-		/**
-		 * TODO : Check the font text
-		 */
-		Font theFont = Font.font("Helvetica", FontWeight.BOLD, 24);
-		gc1.setFont(theFont);
-		gc1.setFill(Color.GREEN);
-		gc1.setStroke(Color.BLACK);
-		gc1.setLineWidth(1);
 
 		// Barrière
 		final Image img = new Image("com/fr/ece/jbomb/view/Decors/fence_end.png");
@@ -170,7 +181,11 @@ public class GUI extends AbstractView {
 		}
 	}
 
-	private void loop(KeyEventHandler kev) {
+	/**
+	 * Anime le jeu côté client et rafraichit l'interface graphique tous les 60 fois par seconde
+	 * @param key Touches appuyées par le joueur	 * 
+	 **/
+	private void loop(KeyEventHandler key) {
 
 		new AnimationTimer() {
 
@@ -178,7 +193,6 @@ public class GUI extends AbstractView {
 			
 				int t=Calendar.getInstance().get(Calendar.MILLISECOND);
 			
-				// Dans la boucle
 				try {
 					// On met a jour la config avec les touches saisies par
 					// l'utilisateur
@@ -209,26 +223,36 @@ public class GUI extends AbstractView {
 	}
 
 	/**
-	 * TODO : Récupérer les coordonnées des décors cassés par les autres puis
-	 * les effacer du décor TODO : Récupérer les coordonnées des joueurs puis
-	 * les actualiser
-	 */
+	 * Met à jour l'interface graphique à partir des données contenues dans l'objet configServeur
+	 * @param canvas Premier Canvas du GUI contenant les objets décors
+	 * @param canvas2 Deuxième Canvas du  GUI contenant les objets player
+	 * @param configServeur Elements de configuration du serveur
+	 **/
 	private void updateFromserver(Canvas canvas, Canvas canvas2, ConfFromServer configServeur) {
 		initPlateauSprite(configServeur.getPlateau(), configServeur.getListPlayer());
 	}
-
-	public void start(Canvas canvas, Canvas canvas2, KeyEventHandler kev) {
-
+	
+	/**
+	 * Démarre le GUI
+	 * @param canvas Premier Canvas du GUI contenant les objets décors
+	 * @param canvas2 Deuxième Canvas du  GUI contenant les objets player
+	 * @param key Touches appuyées par le joueur
+	 **/
+	public void start(Canvas canvas, Canvas canvas2, KeyEventHandler key) {
+	
+		/* Initialisation des canvas */
 		this.canvas=canvas;
 		this.canvas2=canvas2;
-		/* Initialisation des canvas */
+		
+		/* Initialisation du graphical Component */
 		gc1 = canvas2.getGraphicsContext2D();
 		gc2 = canvas2.getGraphicsContext2D();
+		
 		// Comme les frontières seront toujours fixes, on ne touchera jamais
 		// HORS DE LA BOUCLE on bind la config client avec le KeyEventHandler
 		// qui est liée à la scene
-		configClient = new ConfToServer(getController().getPlayer().getID(), kev);
+		configClient = new ConfToServer(getController().getPlayer().getID(), key);
 
-		loop(kev);
+		loop(key);
 	}
 }

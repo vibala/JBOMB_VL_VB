@@ -1,5 +1,10 @@
 package com.fr.ece.jbomb.model;
 
+/**
+ * Classe d'énumération stockant les informations essentielles du plateau
+ * @author Vignesh BALA && Vincent LIM
+ * @version 1.0
+ **/
 public enum Plateau {
 
 	LONGUEUR_PLATEAU(608),
@@ -17,10 +22,17 @@ public enum Plateau {
 	CRAME(8);
 	private int valeur;
 	
+	/**
+	 * Constructeur
+	 * @param valeur Valeur associée à chaque objet énuméré
+	 **/
 	Plateau(int valeur){
 		this.valeur = valeur;
 	}
-	
+	/**
+	 * Retourne l'objet de cette classe à partir de la valeur passée en paramètre
+	 * @param valeur Valeur associée à chaque objet énuméré
+	 **/
 	public static Plateau getNomByValeur(int valeur){
 		for (Plateau plateau : Plateau.values()) {
 			if(plateau.valeur == valeur){
@@ -30,6 +42,10 @@ public enum Plateau {
 			return null;
 	}
 	
+	/**
+	 * Retourne la valeur d'un objet de cette classe
+	 * @return valeur Valeur associée à un objet
+	 **/
 	public int getValeur(){
 		return this.valeur;
 	}

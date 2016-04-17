@@ -15,6 +15,7 @@ public class FireTimer implements Runnable{
 		return i;
 	}
 
+		
 	public boolean getBurned() {
 		return burned;
 	}

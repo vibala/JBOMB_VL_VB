@@ -13,6 +13,7 @@ import static com.fr.ece.jbomb.view.Direction.OUEST;
 import static com.fr.ece.jbomb.view.Direction.SUD;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,25 +26,26 @@ import com.fr.ece.jbomb.controller.BombTimer;
 import com.fr.ece.jbomb.controller.FireTimer;
 import com.fr.ece.jbomb.server.Server;
 import com.fr.ece.jbomb.view.Direction;
-
+/**
+ * Classe permettant de stocker les informations (config plateau + liste des joueurs) à transmettre au client
+ * @author Vignesh BALA && Vincent LIM
+ * @version 1.0
+ **/
 public class ConfFromServer implements Serializable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private List<Player> listPlayer;
 	private Plateau plateau[][];
 	private transient Map<Plateau, Point> playerByCoordinates;
 	private transient int ID_BOMB = 0;
-	private String direction;
-	 private boolean recommencer=false; //Var globale dans la classe
+	private boolean recommencer=false; //Var globale dans la classe
 
+	/**
+	 * Constructeur
+	 **/
 	public ConfFromServer() {
-
 		playerByCoordinates = new HashMap<Plateau, Point>();
-
 		listPlayer = new ArrayList<Player>();
-		// Création d'un tableau aléatoire
 		this.plateau = new Plateau[17][23];
 		ajout_piliers_sols();
 		ajout_murs();
@@ -51,55 +53,35 @@ public class ConfFromServer implements Serializable {
 		update_array_plateau();
 	}
 
-	// -------------------Fonction appelé côté CLIENT
+	/**
+	 * Retourne le plateau 
+	 * @return plateau Plateau de jeu
+	 **/
 	public Plateau[][] getPlateau() {
 		return plateau;
 	}
 
+	/**
+	 * Retourne la liste des joueurs 
+	 * @return listPlayer Liste des joueurs
+	 **/
 	public List<Player> getListPlayer() {
 		return listPlayer;
 	}
 
-	// Construction du plateau
-	private void ajout_flamme() {
-		// Test
-		plateau[1][0] = CRAME;
-		plateau[2][0] = CRAME;
-		plateau[3][0] = CRAME;
-		plateau[2][1] = CRAME;
-		plateau[2][2] = CRAME;
-	}
-
+	/**
+	 * Ajoute les joueurs dans le tableau chargé en mémoire 
+	 **/
 	private void ajout_players() {
-		// //System.out.println("Ajout_Players : Entree");
-		Random rand = new Random();
-		List<Integer> picked_random_numbers = new ArrayList<Integer>();
-		Point[] coordonnees = new Point[4];
-		coordonnees[0] = new Point(0, 0);
-		coordonnees[1] = new Point(0, 22);
-		coordonnees[2] = new Point(16, 0);
-		coordonnees[3] = new Point(16, 22);
-		boolean cds = false;
-		picked_random_numbers.add(0); // a
-		// retirer??????????????????????????????????????????????????????????????????????????????????????????????
-		plateau[16][22] = Plateau.PLAYER1; // a retirer
-		// ????????????????????????????????????????????????????????????????????????????????
+		plateau[16][22] = Plateau.PLAYER1;		
 		plateau[0][0] = Plateau.PLAYER2;
 		plateau[16][0] = Plateau.PLAYER3;
-		plateau[0][22] = Plateau.PLAYER4;
-		// 4 changer 3 par 4 //A CHANGER
-		// ??????????????????????????????????????????????????????????????????????????????
-		/*
-		 * for(int i = 0; i < 3; i++){ cds = false; while(!cds){ int rd =
-		 * rand.nextInt(3); // entre 0 et 3 //System.out.println(rd);
-		 * if(!picked_random_numbers.contains(rd)){
-		 * picked_random_numbers.add(rd); int posx = coordonnees[i].x; int posy
-		 * = coordonnees[i].y; plateau[posx][posy] =
-		 * Plateau.getNomByValeur(rd+1); cds = true; } } }
-		 */
-		//System.out.println("Ajout_Players : Sortie");
+		plateau[0][22] = Plateau.PLAYER4;		
 	}
 
+	/**
+	 * Ajoute les piliers et le sol dans le tableau chargé en mémoire 
+	 **/
 	private void ajout_piliers_sols() {
 		// Mise en forme du sol dans le tableau plateau
 		// //System.out.println("ajout_piliers_sols : Entree");
@@ -113,9 +95,13 @@ public class ConfFromServer implements Serializable {
 				}
 			}
 		}
-		//System.out.println("ajout_piliers_sols : Sortie");
+		
 	}
 
+	/**
+	 * Ajoute les murs particuliers (murs présents sur le premier et le dernier rang en horizontal et en vertical)
+	 * dans le tableau chargé en mémoire 
+	 **/
 	private void gestion_murs_particuliers(int nb_murs, Direction direction) {
 		// //System.out.println("gestion_murs_particuliers : Entree");
 		// Random
@@ -179,6 +165,9 @@ public class ConfFromServer implements Serializable {
 
 	}
 
+	/**
+	 * Ajoute les autres murs dans le tableau chargé en mémoire 
+	 **/
 	private void ajout_murs() {
 		//System.out.println("ajout_murs : Entree");
 		// Random
@@ -206,7 +195,7 @@ public class ConfFromServer implements Serializable {
 				for (int j = 0; j < nb_murs; j++) {
 					cds = false;
 					while (!cds) {
-						rand_num = rand.nextInt(10) * 2; // rand entre 0 et 9
+						rand_num = rand.nextInt(10) * 2;
 						if (!random_numbers.contains(rand_num)) {
 							random_numbers.add(rand_num);
 							plateau[i][rand_num + 2] = MUR;
@@ -216,12 +205,11 @@ public class ConfFromServer implements Serializable {
 				}
 				random_numbers.clear();
 			} else {
-				nb_murs = rand.nextInt(12) + 10; // rand entre 0 et 9 min : 10
-													// murs et max : 21
+				nb_murs = rand.nextInt(12) + 10; 
 				for (int j = 0; j < nb_murs; j++) {
 					cds = false;
 					while (!cds) {
-						rand_num = rand.nextInt(21); // entre 0 et 20
+						rand_num = rand.nextInt(21); 
 						if (!random_numbers.contains(rand_num)) {
 							random_numbers.add(rand_num);
 							plateau[i][rand_num + 1] = MUR;
@@ -231,17 +219,24 @@ public class ConfFromServer implements Serializable {
 				}
 				random_numbers.clear();
 			}
-		}
-
-		// //System.out.println("ajout_murs : Sortie");
+		}		
 	}
 
-	// -------------------Fonction appelé côté SERVER
-
+	
+	/**
+	 * Ajoute le joueur passé en paramètre dans la liste des joueurs
+	 * @param p Player 
+	 **/
 	public void addPlayer(Player p) {
 		listPlayer.add(p);
 	}
 
+	/**
+	 * Met à jour les configurations du plateau et de la liste des joueurs souhaitées par le client
+	 * et retourne les nouvelles configurations 
+	 * @param p Player 
+	 * @return confFromServer Configuration du plateau et de la liste des joueurs
+	 **/
 	public ConfFromServer update(ConfToServer confToServer) {
 
 		Player player = listPlayer.get(confToServer.idPlayer - 1);
@@ -251,7 +246,6 @@ public class ConfFromServer implements Serializable {
 			if (!onPressedRight(player)) {
 				player.move(5, 0);
 			}
-			//System.out.println(player.getDirectionPourSavoirQuelleImageAfficher());
 		}
 
 		if (confToServer.getKeyList().contains("LEFT")) {
@@ -259,17 +253,13 @@ public class ConfFromServer implements Serializable {
 			if (!onPressedLeft(player)) {
 				player.move(-5, 0);
 			}
-
-
-			//System.out.println(player.getDirectionPourSavoirQuelleImageAfficher());
 		}
+		
 		if (confToServer.getKeyList().contains("UP")) {
 			player.setDirectionPourSavoirQuelleImageAfficher("UP");
 			if (!onPressedUp(player)) {
 				player.move(0, -5);
 			}
-
-			//System.out.println(player.getDirectionPourSavoirQuelleImageAfficher());
 		}
 
 		if (confToServer.getKeyList().contains("DOWN")) {
@@ -277,21 +267,21 @@ public class ConfFromServer implements Serializable {
 			if (!onPressedDown(player)) {
 				player.move(0, 5);
 			}
-
 		}
 
-		
-		// Vince's code on explosion
 		if (confToServer.getKeyList().contains("B")) {
 			onPressedBomb(player);
 		}
-
-		System.out.println("DD COTE SERVEUR : " + player.getDirectionPourSavoirQuelleImageAfficher());
+		
 		explosionDesBombes();
 		cleanFire();
 		return this;
 	}
 	
+	/**
+	 * Actualise les endroits impactés par l'explosition de la bombe 
+	 * 
+	 **/
 	public void cleanFire(){
 		for(FireTimer f:Server.listFire){
 			if(f.getBurned()){
@@ -302,6 +292,9 @@ public class ConfFromServer implements Serializable {
 		
 	}
 
+	/**
+	 * Met à jour le tableau (chargé en mémoire) representant le plateau de jeu 
+	 **/
 	private void update_array_plateau() {
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
@@ -314,14 +307,16 @@ public class ConfFromServer implements Serializable {
 				default:
 					break;
 				}
-				//System.out.print(plateau[i][j].getValeur() + " ");
 			}
-			//System.out.println();
 		}
 	}
 
-	///////////////////////////////// Check Collision
-
+	/**
+	 * Crée le sprite associé au voisin du joueur
+	 * @return  neighbor Sprite voisin
+	 * @param positionRow_neighbor Position ligne du voisin dans le tableau chargé en mémoire
+ 	 * @param positionCol_neighbor Position colonne du voisin dans le tableau chargé en mémoire
+	 **/
 	public Sprite createNeighborSprite(int positionRow_neighbor, int positionCol_neighbor) {
 
 		// Coordonnes en pixels du voisin
@@ -348,9 +343,14 @@ public class ConfFromServer implements Serializable {
 		return neighbor;
 	}
 
-	/***************************************************************************/
-	/////////////////////////////////////////////////////////////// Check
-	/////////////////////////////////////////////////////////////// neighbors
+	/**
+	 * Vérifie les collisions du joueur avec les voisins de proximité
+	 * @return  nb_intersections Nombre de collisions
+	 * @param row Position ligne du joueur dans le tableau chargé en mémoire
+ 	 * @param col Position colonne du joueur dans le tableau chargé en mémoire
+ 	 * @param player Sprite associé au joueur
+ 	 * @param direction Direction empruntée par le joueur
+	 **/
 	public int checkFourNeighbor(int row, int col, Sprite player, Direction direction) {
 		int nb_intersections = 0;
 
@@ -360,13 +360,11 @@ public class ConfFromServer implements Serializable {
 				Sprite neighborEast = createNeighborSprite(row + 1, col - 1);
 
 				if (player.intersects(neighborEast)) {
-					//System.out.print("E ");
 					nb_intersections++;
 				}
 
 				neighborEast = createNeighborSprite(row, col - 1);
 				if (player.intersects(neighborEast)) {
-					//System.out.print("E ");
 					nb_intersections++;
 				}
 
@@ -376,13 +374,11 @@ public class ConfFromServer implements Serializable {
 				Sprite neighborWest = createNeighborSprite(row + 1, col + 1);
 
 				if (player.intersects(neighborWest)) {
-					//System.out.print("W ");
 					nb_intersections++;
 				}
 
 				neighborWest = createNeighborSprite(row, col + 1);
 				if (player.intersects(neighborWest)) {
-					//System.out.print("W");
 					nb_intersections++;
 				}
 			}
@@ -393,28 +389,24 @@ public class ConfFromServer implements Serializable {
 				Sprite neighborEast = createNeighborSprite(row - 1, col - 1);
 
 				if (player.intersects(neighborEast)) {
-					//System.out.print("East Collision ");
 					nb_intersections++;
 				}
 
 				neighborEast = createNeighborSprite(row, col - 1);
 				if (player.intersects(neighborEast)) {
-					//System.out.print("East Collision ");
-					nb_intersections++;
+						nb_intersections++;
 				}
 			}
 
 			if (row - 1 >= 0 && col + 1 < 23) {
 				Sprite neighborWest = createNeighborSprite(row - 1, col + 1);
 
-				if (player.intersects(neighborWest)) {
-					//System.out.print("West Collision");
+				if (player.intersects(neighborWest)) {				
 					nb_intersections++;
 				}
 
 				neighborWest = createNeighborSprite(row, col + 1);
-				if (player.intersects(neighborWest)) {
-					//System.out.print("West Collision");
+				if (player.intersects(neighborWest)) {					
 					nb_intersections++;
 				}
 			}
@@ -424,13 +416,11 @@ public class ConfFromServer implements Serializable {
 				Sprite neighborNorth = createNeighborSprite(row - 1, col + 1);
 
 				if (player.intersects(neighborNorth)) {
-					//System.out.print("Nord Collision ");
 					nb_intersections++;
 				}
 
 				neighborNorth = createNeighborSprite(row - 1, col);
 				if (player.intersects(neighborNorth)) {
-					//System.out.print("Nord Collision ");
 					nb_intersections++;
 				}
 			}
@@ -438,13 +428,11 @@ public class ConfFromServer implements Serializable {
 			if (row + 1 < 17 && col + 1 < 23) {
 				Sprite neighborSouth = createNeighborSprite(row + 1, col + 1);
 				if (player.intersects(neighborSouth)) {
-					//System.out.print("Sud Collision ");
 					nb_intersections++;
 				}
 
 				neighborSouth = createNeighborSprite(row + 1, col);
 				if (player.intersects(neighborSouth)) {
-					//System.out.print("Nord Collision ");
 					nb_intersections++;
 				}
 			}
@@ -455,13 +443,11 @@ public class ConfFromServer implements Serializable {
 				Sprite neighborNorth = createNeighborSprite(row - 1, col - 1);
 
 				if (player.intersects(neighborNorth)) {
-					//System.out.print("Nord Collision ");
 					nb_intersections++;
 				}
 
 				neighborNorth = createNeighborSprite(row - 1, col);
 				if (player.intersects(neighborNorth)) {
-					//System.out.print("Nord Collision ");
 					nb_intersections++;
 				}
 			}
@@ -470,13 +456,11 @@ public class ConfFromServer implements Serializable {
 				Sprite neighborSouth = createNeighborSprite(row + 1, col - 1);
 
 				if (player.intersects(neighborSouth)) {
-					//System.out.print("Sud Collision ");
 					nb_intersections++;
 				}
 
 				neighborSouth = createNeighborSprite(row + 1, col);
 				if (player.intersects(neighborSouth)) {
-					//System.out.print("Nord Collision ");
 					nb_intersections++;
 				}
 			}
@@ -484,35 +468,32 @@ public class ConfFromServer implements Serializable {
 			break;
 		}
 
-		//System.out.println("N°inter " + nb_intersections);
 		return nb_intersections;
 	}
 
-	/***************************************************************************/
-
+	/**
+	 * Methode invoquée lorsque le joueur dépose une bombe
+	 * @return true/false Autorisation du dépôt de la bombe
+	 **/
 	private boolean onPressedBomb(Player player) {
 		if(player.getBomb()==0){
-			//System.out.println("Le joueur n'a plus de bombe ! "+player.getBomb());
 			return true;
 		}
-		////System.out.println("La bombe ne peut pas être posé "+player.getBomb());
 		
 		//Recup case devant joueur
 		int deltaX=0;
 		int deltaY=0;
-		 // Se fait en fonction de l'orientation de limage du player et si la case devan lui est vide
-		//System.out.println("direction reagrd : " +player.getDirectionPourSavoirQuelleImageAfficher());
+		// Se fait en fonction de l'orientation de limage du player et si la case devan lui est vide
+		
 		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("UP")) deltaX--;
 		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("DOWN")) deltaX++;
 		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("RIGHT")) deltaY++;
 		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("LEFT")) deltaY--;
 		
-		//SSI caseRecup = 0
-		
+			
 		int i =(int) (playerByCoordinates.get(Plateau.getNomByValeur(player.getID())).getX()+deltaX);
 		int j =(int) (playerByCoordinates.get(Plateau.getNomByValeur(player.getID())).getY()+deltaY);
 	
-		//System.out.println("bombe essaye d'etre placé en :"+i+" "+j);
 		if(0<=i&& i<=16 && 0<=j && j<= 22 && plateau[i][j]==SOL)
 		{
 			plateau[i][j]=BOMBE;
@@ -533,7 +514,9 @@ public class ConfFromServer implements Serializable {
 	}
 	
    
-	/***************************************************************************/
+	/**
+	 * Retire le joueur du plateau une fois qu'il est touché par une bombe
+	 **/
 	public void removePlayer(int i, int j){
 		{
 			if(plateau[i][j]==Plateau.BOMBE){
@@ -574,13 +557,16 @@ public class ConfFromServer implements Serializable {
 		}
 	}
 	
-	/***************************************************************************/
+	/**
+	 * Implemente l'explosion de la bombe
+	 **/
 	public void boucleExplosion(){
 		int i;
 		int j;
-		   Iterator it = Server.listBomb.entrySet().iterator(); //Exception ou on ne passe pas par le getListBomb car on sait que c'est nous qui avons le jeton
+		   Iterator<?> it = Server.listBomb.entrySet().iterator(); //Exception ou on ne passe pas par le getListBomb car on sait que c'est nous qui avons le jeton
 		    while (it.hasNext()) {
-		        Map.Entry pair = (Map.Entry)it.next();
+		        @SuppressWarnings("rawtypes")
+				Map.Entry pair = (Map.Entry)it.next();
 		    	if(((Bomb)pair.getValue()).getID()>=10000){ //car id bomb qui pète >= 100
 		    		i=(int) ((Bomb)pair.getValue()).getX();
 		    		j=(int) ((Bomb)pair.getValue()).getY();
@@ -592,19 +578,16 @@ public class ConfFromServer implements Serializable {
 					new Thread(fire).start();
 					it.remove(); //On suprime la bombe
 					}
-					i=i+1;
-					j=j;
+					i=i+1;				
 					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==CRAME|plateau[i][j]==SOL|plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
 						removePlayer(i,j);
 					i=i-1-1;
-					j=j;
 					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==CRAME|plateau[i][j]==SOL|plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
 						removePlayer(i,j);
 					i=i+1;
 					j=j-1;
 					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==CRAME|plateau[i][j]==SOL|plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
 						removePlayer(i,j);
-					i=i;
 					j=j+2;
 					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==CRAME|plateau[i][j]==SOL|plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
 						removePlayer(i,j);
@@ -616,16 +599,24 @@ public class ConfFromServer implements Serializable {
 	    		boucleExplosion();
 	    	}
 	}
-	/***************************************************************************/
-
+	/**
+	 * Invoque la méthode boucleExplosion en mode synchrone (un seul thread ne peut
+	 * accéder à cette méthode à la fois)
+	 *  
+	 **/
 	public void explosionDesBombes() {
 		synchronized (Server.JETON_BOMB) {
 			boucleExplosion();
 		}
 	}
 
-	/*****************************************************************************************/
-	////////////////////////////////// Check fences
+	
+	/**
+	 * Vérifie les collisions avec les barrières délimitant le plateau
+	 * @param player Sprite associé au joueur
+ 	 * @param direction Direction empruntée par le joueur
+ 	 * @return true/false Collision avec les barrières
+	 **/
 	private boolean exceed_fences(Player player, Direction direction) {
 		switch (direction) {
 		case EST:
@@ -655,6 +646,13 @@ public class ConfFromServer implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Vérifie les collisions du joueur avec les voisins de proximité et valide le passage
+	 * du joueur d'une case à une autre
+	 * @return true/false Autorisation du déplacement du joueur
+ 	 * @param player Sprite associé au joueur
+ 	 * @param direction Direction empruntée par le joueur
+	 **/
 	public boolean is_any_collision(Player player, Direction direction) {
 
 		// Coordonnes x,y du joueur dans le tableau tab[][]
@@ -677,28 +675,17 @@ public class ConfFromServer implements Serializable {
 			positionRow_neighbor = positionRow_player - 1;
 			positionCol_neighbor = positionCol_player;
 
-			// //System.out.println("Position Row Neighbor " +
-			// positionRow_neighbor + " Position Col Neighbor " +
-			// positionCol_neighbor);
-
 			if (positionRow_neighbor >= 0) {
 
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
 				// Simulation
 				simul.move(0, -5);
-				//System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
-				//System.out.println("PLAYER1 COORDINATE IN ROW,COL : " + positionRow_player + " " + positionCol_player);
-				//System.out.println("NEIGHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
-				//System.out.println("NEIGHBOR COORDINATE IN ROW,COL : " + positionRow_neighbor + " " + positionCol_neighbor);
-
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul, NORD);
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0) {
-					//System.out.println("Mono intersection ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
-						// //System.out.println("Min : " + min + " Max : " + max);
 						if (min <= simul.getPositionY() + 16 && simul.getPositionY() + 16 <= max) {
 							playerByCoordinates.put(Plateau.getNomByValeur(player.getID()),new Point(positionRow_player - 1, positionCol_player));
 							plateau[positionRow_player][positionCol_player] = SOL;
@@ -710,7 +697,6 @@ public class ConfFromServer implements Serializable {
 						return true;
 					}
 				} else if (nb_intersections != 0) {
-					//System.out.println("Poly collision ");
 					simul.move(0, +5);
 					return true;
 				}
@@ -723,9 +709,6 @@ public class ConfFromServer implements Serializable {
 			}
 			return false;
 
-		/*********************************************************************************************************/
-		/*********************************************************************************************************/
-
 		case SUD:
 
 			// Coordonnes x,y du voisin dans le tableau tab[][]
@@ -736,16 +719,10 @@ public class ConfFromServer implements Serializable {
 
 				// Simulation
 				simul.move(0, +5);
-				//System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
-				//System.out.println("PLAYER1 COORDINATE IN ROW,COL : " + positionRow_player + " " + positionCol_player);
-				//System.out.println("NEIGHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
-				//System.out.println("NEIGHBOR COORDINATE IN ROW,COL : " + positionRow_neighbor + " " + positionCol_neighbor);
-
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul, SUD);
 
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0) {
-					//System.out.println("Mono intersection");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
@@ -763,7 +740,6 @@ public class ConfFromServer implements Serializable {
 						return true;
 					}
 				} else if (nb_intersections != 0) {
-					//System.out.println("Poly collision ");
 					simul.move(0, -5);
 					return true;
 				}
@@ -776,8 +752,6 @@ public class ConfFromServer implements Serializable {
 			}
 			return false; // s'il n'y a aucne intersection
 
-		/*********************************************************************************************************/
-		/*********************************************************************************************************/
 		case EST:
 			// Coordonnes x,y du voisin dans le tableau tab[][]
 			positionRow_neighbor = positionRow_player;
@@ -785,24 +759,16 @@ public class ConfFromServer implements Serializable {
 
 			if (positionCol_neighbor < 23) {
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-				//System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
-				//System.out.println("PLAYER1 COORDINATE IN ROW,COL : " + positionRow_player + " " + positionCol_player);
-				//System.out.println("NEIGHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
-				//System.out.println("NEIGHBOR COORDINATE IN ROW,COL : " + positionRow_neighbor + " " + positionCol_neighbor);
-
 				// Simulation
 				simul.move(+5, 0);
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul, EST);
 
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0) {
-					// //System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionCol_neighbor + 1) * 32;
 						int max = (positionCol_neighbor + 2) * 32;
-						// //System.out.println("Min : " + min + " Max : " + max);
 						if (min <= simul.getPositionX() + 16 && simul.getPositionX() + 16 <= max) {
-							// //System.out.println("CHANGE SOL ");
 							playerByCoordinates.put(Plateau.getNomByValeur(player.getID()),
 									new Point(positionRow_player, positionCol_player + 1));
 							plateau[positionRow_player][positionCol_player] = SOL;
@@ -811,7 +777,6 @@ public class ConfFromServer implements Serializable {
 						}
 						return false;
 					} else {
-						//System.out.println("NO SOL");
 						simul.move(-5, 0);
 						return true;
 					}
@@ -838,11 +803,6 @@ public class ConfFromServer implements Serializable {
 
 			if (positionCol_neighbor >= 0) {
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-				//System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
-				//System.out.println("PLAYER1 COORDINATE IN ROW,COL : " + positionRow_player + " " + positionCol_player);
-				//System.out.println("NEIGHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
-				//System.out.println("NEIGHBOR COORDINATE IN ROW,COL : " + positionRow_neighbor + " " + positionCol_neighbor);
-
 				// Simulation
 				simul.move(-5, 0);
 
@@ -850,13 +810,10 @@ public class ConfFromServer implements Serializable {
 
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0) {
-					// //System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionCol_neighbor + 1) * 32;
 						int max = (positionCol_neighbor + 2) * 32;
-						// //System.out.println("Min : " + min + " Max : " + max);
 						if (min <= simul.getPositionX() + 16 && simul.getPositionX() + 16 <= max) {
-							// //System.out.println("CHANGE SOL ");
 							playerByCoordinates.put(Plateau.getNomByValeur(player.getID()),
 									new Point(positionRow_player, positionCol_player - 1));
 							plateau[positionRow_player][positionCol_player] = SOL;
@@ -866,7 +823,6 @@ public class ConfFromServer implements Serializable {
 
 						}
 					} else {
-						//System.out.println("NO SOL");
 						simul.move(+5, 0);
 						return true;
 					}
@@ -883,44 +839,53 @@ public class ConfFromServer implements Serializable {
 				return true;
 			}
 		}
-		//System.out.println("FFFFF");
 		return false;
 	}
 
-	//////////////////////////////////////////////////////////////////// End
-	//////////////////////////////////////////////////////////////////// checking
-	//////////////////////////////////////////////////////////////////// Collsion
-
+	/**
+	 * Méthode invoqué lorsque le joueur appuie sur la touche droite du pavé directionnel
+	 * @param player Sprite associé au joueur
+	 * @return  true/false Droit du déplacement
+	 **/
 	private boolean onPressedRight(Player player) {
 
-		//System.out.println(player.getPositionX() + " " + player.getPositionY());
 		if (exceed_fences(player, EST)) {
 			return true;
 		}
 		return is_any_collision(player, EST);
 	}
 
+	/**
+	 * Méthode invoqué lorsque le joueur appuie sur la touche gauche du pavé directionnel
+	 * @param player Sprite associé au joueur
+	 * @return  true/false Droit du déplacement
+	 **/
 	private boolean onPressedLeft(Player player) {
-		//System.out.println(player.getPositionX() + " " + player.getPositionY());
-		// Si la méthode check_pillars_collisions renvoie false
 		if (exceed_fences(player, OUEST)) {
-			// Il existe une collision donc pas de déplacement
 			return true;
 		}
 		return is_any_collision(player, OUEST);
 
 	}
 
+	/**
+	 * Méthode invoqué lorsque le joueur appuie sur la touche haut du pavé directionnel
+	 * @param player Sprite associé au joueur
+	 * @return  true/false Droit du déplacement
+	 **/
 	private boolean onPressedUp(Player player) {
-		//System.out.println(player.getPositionX() + " " + player.getPositionY());
 		if (exceed_fences(player, NORD)) {
 			return true;
 		}
 		return is_any_collision(player, NORD);
 	}
 
+	/**
+	 * Méthode invoqué lorsque le joueur appuie sur la touche bas du pavé directionnel
+	 * @param player Sprite associé au joueur
+	 * @return  true/false Droit du déplacement
+	 **/
 	private boolean onPressedDown(Player player) {
-		//System.out.println(player.getPositionX() + " " + player.getPositionY());
 		if (exceed_fences(player, SUD)) {
 			return true;
 		}
