@@ -10,15 +10,24 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
+/**
+ * Main du client 1
+ * @author huong
+ *
+ */
 public class Main extends Application {
-	
+	/**
+	 * Démarre le jeu
+	 * @param args
+	 */
 	public static void main(String[] args)  {
 	
 		//Lancement de l'interface graphique
 	      Application.launch(args);
 	}
-
+/**
+ * Démarrage du jeu
+ */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		

@@ -10,7 +10,11 @@ import com.fr.ece.jbomb.view.GUI;
 import com.fr.ece.jbomb.view.KeyEventHandler;
 
 import javafx.scene.canvas.Canvas;
-
+/**
+ * Classe Controller : Initialisation de la connexion et des ses flux et ecriture vers le serveur et lecture depuis le serveur
+ * @author huong
+ *
+ */
 public class Controller implements GUIListener {
 
 	private GUI gui;
@@ -26,7 +30,12 @@ public class Controller implements GUIListener {
 	private ObjectInputStreamChat ois = null;
 	private String serverIP;
 	private int serverPort;
-
+/**
+ * Initialisation du controller
+ * @param me client
+ * @param sIP IP du server
+ * @param sPort Port du server
+ */
 	public Controller(Client me, String sIP, int sPort) {
 		this.moi = me;
 		this.serverIP = sIP;
@@ -64,29 +73,44 @@ public class Controller implements GUIListener {
 			e.printStackTrace();
 		}
 	}
-
+/**
+ * Reccup player du client
+ */
 	public Player getPlayer() {
 		return player;
 	}
-
+/**
+ * Initialiser les parametre du controller 
+ * @param gui GUI
+ * @param canvas canvas
+ * @param canvas2 canvas2
+ * @param key Objet qui réccupère les touches du joueur
+ */
 	public void setInit(GUI gui, Canvas canvas, Canvas canvas2, KeyEventHandler key) {
 		this.gui = gui;
 		this.canvas = canvas;
 		this.canvas2 = canvas2;
 		this.key = key;
 	}
-
+/**
+ * Lire la configuration reçu par le serveur
+ */
 	public ConfFromServer readConf() throws ClassNotFoundException, IOException {
 		ConfFromServer configServeur = (ConfFromServer) ois.lire();
 		return configServeur;
 	}
-
+/**
+ * Ecrire la configuration du client vers le serveur. Une fois que le serveur aura pris en compte la config du client il renverra sa config et le client mettra sa vue 
+ * en fonction de la configuration du serveur
+ */
 	public ConfToServer writeConf(ConfToServer conf) {
 		oos.envoyer(conf);
 		return conf;
 
 	}
-
+/**
+ * Démarrer le controller
+ */
 	public void start() {
 		// ------------------------------DIALOGUE---------------------------------------------------
 

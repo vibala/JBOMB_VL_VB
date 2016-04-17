@@ -1,6 +1,10 @@
 package com.fr.ece.jbomb.controller;
 
-
+/**
+ * Permet de faire undécompte pour savoir quand les flammes doivent s'éteindre
+ * @author huong
+ *
+ */
 public class FireTimer implements Runnable{
 	
 	private int i;
@@ -10,23 +14,39 @@ public class FireTimer implements Runnable{
 		this.i=i;
 		this.j=j;
 	}
-
+/**
+ * Réccuperer l'indice row de la flamme dans le plateau
+ * @return
+ */
 		public int getI() {
 		return i;
 	}
 
-		
+		/**
+		 * Permet de savoir si la flamme est présent dans le plateau
+		 * @return 
+		 */
 	public boolean getBurned() {
 		return burned;
 	}
+	/**
+	 * Modifier l'état de la flamme dans le plateau
+	 * @param bool
+	 */
 	public void setBurned(boolean bool) {
 		 burned=bool;
 	}
+	/**
+	 *  Réccuperer l'indice column de la flamme dans le plateau
+	 * @return
+	 */
 	public int getJ() {
 		return j;
 	}
 
-	
+	/**
+	 * Commence le décompte avant que la flamme disparaisse
+	 */
 		public void run() {
 			try {
 				Thread.sleep(1000);
