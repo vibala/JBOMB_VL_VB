@@ -54,7 +54,7 @@ public class Main extends Application {
 
 		
 		//Connexion
-		String serverIP="127.0.0.1";
+		String serverIP="192.168.0.24";
 		int serverPort=1234;
 		
 		String clientIP="127.0.0.1";
