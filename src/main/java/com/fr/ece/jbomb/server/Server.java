@@ -21,7 +21,7 @@ public class Server {
 	private InetSocketAddress ipServer;
 	private int nbMaxConnection;
 	private ServerSocket server;
-	public static Map<Integer,Bomb> listBomb = new HashMap<Integer,Bomb>();
+	public static Map<Point,Bomb> listBomb = new HashMap<Point,Bomb>();
 	
 	private static List<ConnectionHandler> listConnectionHandler = new ArrayList<ConnectionHandler>(); // utile pour chat privée 
 	public static boolean endOftheGame=false;
@@ -76,18 +76,18 @@ public class Server {
 		return listConnectionHandler;
 	}
 	//Appelé dans les connectionHandler pour savoir si les 4 joueurs se sont connectés
-	public static Map<Integer,Bomb> getListBomb(){
+	public static void addListBomb(Point p , Bomb b){
 		  synchronized(JETON_BOMB) {
-				return listBomb;
+				listBomb.put(p, b);
 				   }
 	}
-	public static void updateListBomb(int idBomb){
+	public static void updateListBomb(int i, int j){
 		  synchronized(JETON_BOMB) {
-			  System.out.println(idBomb);
-				Bomb bombeAFairePeter=new Bomb(Server.getListBomb().get(idBomb));
-				bombeAFairePeter.setID(idBomb+10000);
-				Server.getListBomb().put(bombeAFairePeter.getID(),bombeAFairePeter); // Les bombes qui ont pété ont un id > 100
-				Server.getListBomb().remove(idBomb);
+			  Point keyBomb=new Point(i,j);
+			  if(!Server.listBomb.containsKey(keyBomb)) return; // s'il ne l'a pas c'est que la bombe a explosé dans la conf par une autre bombe
+			  
+				Bomb bombeAFairePeter=Server.listBomb.get(keyBomb);
+				bombeAFairePeter.setID(bombeAFairePeter.getID()+10000); // Les bombes qui ont pété ont un id > 10000
 				   }
 	}
 

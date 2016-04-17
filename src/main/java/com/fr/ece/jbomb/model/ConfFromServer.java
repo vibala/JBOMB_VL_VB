@@ -283,62 +283,86 @@ public class ConfFromServer implements Serializable {
 			explosionDesBombes();
 		return this;
 	}
+	
+	 private boolean recommencer=false; //Var globale dans la classe
+	   
 	public void removePlayer(int i, int j){
 		{
+			if(plateau[i][j]==Plateau.BOMBE){
+				System.out.println("plateau"+i+ " "+j);
+				 int idBomb=Server.listBomb.get(new Point(i,j)).getID();
+				 System.out.println("plateau"+i+ " OK "+j);
+					Server.listBomb.get(new Point(i,j)).setID(idBomb+50000);// Les bombes qui ont pété ont un id > 50000
+			recommencer =true;
+			return;
+			}else {
 			if(plateau[i][j]==Plateau.PLAYER1){
 				listPlayer.get(0).setPositionX(-1000);
 			listPlayer.get(0).setPositionY(-1000);
-			//playerByCoordinates.put(plateau[i][j], null);
 			}
 			else if(plateau[i][j]==Plateau.PLAYER2){
 				listPlayer.get(1).setPositionX(-1000);
 			listPlayer.get(1).setPositionY(-1000);
-			//		playerByCoordinates.put(plateau[i][j], null);
 			}	else if(plateau[i][j]==Plateau.PLAYER3){
 				listPlayer.get(2).setPositionX(-1000);
 			listPlayer.get(2).setPositionY(-1000);
-			//	playerByCoordinates.put(plateau[i][j], null);
 			}
-			if(plateau[i][j]==Plateau.PLAYER4){
+			else if(plateau[i][j]==Plateau.PLAYER4){
 				listPlayer.get(3).setPositionX(-1000);
 			listPlayer.get(3).setPositionY(-1000);
-			//		playerByCoordinates.put(plateau[i][j], null);
 			}
+			else if(plateau[i][j]==Plateau.PLAYER4){
+				listPlayer.get(3).setPositionX(-1000);
+			listPlayer.get(3).setPositionY(-1000);
+			}
+			else if(plateau[i][j]==Plateau.MUR){
+			}
+			
 			plateau[i][j]=SOL;//CRAME
-		//CRAME}
+			}	
 		}
 	}
-public void explosionDesBombes(){
-	int i;
-	int j;
-	   synchronized(Server.JETON_BOMB) {
+	public void boucleExplosion(){
+		int i;
+		int j;
 		   Iterator it = Server.listBomb.entrySet().iterator(); //Exception ou on ne passe pas par le getListBomb car on sait que c'est nous qui avons le jeton
-	    while (it.hasNext()) {
-	        Map.Entry pair = (Map.Entry)it.next();
-	    	if((Integer)(pair.getKey())>=10000){ //car id bomb qui pète >= 100
-	    		i=(int) ((Bomb)pair.getValue()).getX();
-	    		j=(int) ((Bomb)pair.getValue()).getY();
-				if(0<=i&& i<=16 && 0<=j && j<= 22 && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
-				removePlayer(i,j);
-				i=i+1;
-				j=j;
-				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
-					removePlayer(i,j);
-				i=i-1-1;
-				j=j;
-				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
-					removePlayer(i,j);
-				i=i+1;
-				j=j-1;
-				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
-					removePlayer(i,j);
-				i=i;
-				j=j+2;
-				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
-					removePlayer(i,j);
-				
-				it.remove(); 
-			}}
+		    while (it.hasNext()) {
+		        Map.Entry pair = (Map.Entry)it.next();
+		    	if(((Bomb)pair.getValue()).getID()>=10000){ //car id bomb qui pète >= 100
+		    		i=(int) ((Bomb)pair.getValue()).getX();
+		    		j=(int) ((Bomb)pair.getValue()).getY();
+					if(0<=i&& i<=16 && 0<=j && j<= 22)
+					{	
+					plateau[i][j]=SOL;//CRAME
+					it.remove(); //On suprime la bombe
+					}
+					i=i+1;
+					j=j;
+					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+						removePlayer(i,j);
+					i=i-1-1;
+					j=j;
+					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+						removePlayer(i,j);
+					i=i+1;
+					j=j-1;
+					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+						removePlayer(i,j);
+					i=i;
+					j=j+2;
+					if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==BOMBE|plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+						removePlayer(i,j);
+					
+				}
+		    }
+		  	if(recommencer) {
+	    		recommencer=false;
+	    		boucleExplosion();
+	    	}
+	}
+public void explosionDesBombes(){
+	   synchronized(Server.JETON_BOMB) {
+		   boucleExplosion();
 	    }
 }
 	private void update_array_plateau() {
@@ -471,9 +495,10 @@ public void explosionDesBombes(){
 			int idBomb=ID_BOMB;
 			ID_BOMB++;
 			Bomb bomb=new Bomb(idBomb,i,j);
-			Server.getListBomb().put(idBomb,bomb);
+			System.out.println("pos" + i+j);
+			Server.addListBomb(new Point(i,j),bomb);
 			
-			new Thread(new BombTimer(bomb)).start();
+			new Thread(new BombTimer(i,j)).start();
 			
 			return false;//Il n'y a rien devant toi player tu peux poser une bombe => renvoyer false
 		}
