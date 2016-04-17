@@ -3,6 +3,7 @@ package com.fr.ece.jbomb.view;
 import static com.fr.ece.jbomb.model.Plateau.LARGEUR_PLATEAU;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 import com.fr.ece.jbomb.model.ConfFromServer;
@@ -35,60 +36,42 @@ public class GUI extends AbstractView {
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!A MODIFIER POUR prendre en compte la listePlayer !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private void initPlateauSprite(Plateau[][] plateau, List<Player> listPlayer) {
-		System.out.println("initPlateauSprite : debut");
+		//System.out.println("initPlateauSprite : debut");
 		
-		/* Initialisation des canvas */
-		gc1 = canvas2.getGraphicsContext2D();
-		gc2 = canvas2.getGraphicsContext2D();
-		
-		gc1.clearRect(0, 0, LARGEUR_PLATEAU.getValeur(), Plateau.LONGUEUR_PLATEAU.getValeur());
-		gc2.clearRect(0, 0, LARGEUR_PLATEAU.getValeur(), Plateau.LONGUEUR_PLATEAU.getValeur());
+	
+	//	gc1.clearRect(0, 0, LARGEUR_PLATEAU.getValeur(), Plateau.LONGUEUR_PLATEAU.getValeur());
+	//	gc2.clearRect(0, 0, LARGEUR_PLATEAU.getValeur(), Plateau.LONGUEUR_PLATEAU.getValeur());
 		
 		// le canvas où les frontières ont été dessinées
 		initFrontierePlateauSprite();
 
 		/* Initialisation des images */
 			// Pilier
-			Image pilier = new Image("com/fr/ece/jbomb/view/Decors/pilier_end_v3.png");
+	/*		Image pilier = new Image("com/fr/ece/jbomb/view/Decors/pilier_end_v3.png");
 			// Mur
 			Image mur = new Image("com/fr/ece/jbomb/view/Decors/mur_end_v5.png");
 			// Player 1
-			Image image_joueur1 = new Image("com/fr/ece/jbomb/view/Avatar/P1-1.png");
+			Image image_joueur1 = ;
 			// Player 2
 			Image image_joueur2 = new Image("com/fr/ece/jbomb/view/Avatar/P2-1.png");
 			// Player 3
 			Image image_joueur3 = new Image("com/fr/ece/jbomb/view/Avatar/P4-4.png");
 			// Player 4
 			Image image_joueur4 = new Image("com/fr/ece/jbomb/view/Avatar/P3-4.png");
-
+*/
 			
 		// Instanciation d'un objet decor, des objets player
-		Decor decor;
-		System.out.println("ll");
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
 				switch (plateau[i][j]) {
 				case PILIER:
-					decor = new Decor();
-					decor.setImage(pilier);
-					decor.setPositionX((j + 1) * 32);
-					decor.setPositionY((i + 1) * 32);
-					decor.setWidth(24);
-					decor.setHeight(24);
-					gc1.drawImage(decor.getImage(), decor.getPositionX(), decor.getPositionY());
-					
+					gc2.drawImage(new Image("com/fr/ece/jbomb/view/Decors/pilier_end_v3.png"), (j + 1) * 32 ,(i + 1) * 32);
 					break;
-				
 				case MUR:
-					decor = new Decor();
-					decor.setImage(mur);
-					decor.setPositionX((j + 1) * 32);
-					decor.setPositionY((i + 1) * 32);
-					decor.setWidth(24);
-					decor.setHeight(24);
-					gc2.drawImage(decor.getImage(), decor.getPositionX(), decor.getPositionY());
+					gc2.drawImage(new Image("com/fr/ece/jbomb/view/Decors/mur_end_v5.png"), (j + 1) * 32 ,(i + 1) * 32);
 					break;
-				
+				case BOMBE:
+					gc2.drawImage(new Image("com/fr/ece/jbomb/view/Avatar/bomb.png"), (j + 1) * 32, (i + 1) * 32);
 				default:
 					break;
 				}
@@ -97,42 +80,40 @@ public class GUI extends AbstractView {
 			for (Player player : listPlayer) {
 				switch(player.getID()){
 					case 1:
-						System.out.println( player.getPositionX());
+				//		System.out.println( player.getPositionX());
 						player1 = new Player(1, player.getPositionX(),player.getPositionY(), 32,32);
-						player1.setImage(image_joueur1);
+						player1.setImage(new Image("com/fr/ece/jbomb/view/Avatar/P1-1.png"));
 						//plateau_sprites[i][j] = player1;
 						gc2.drawImage(player1.getImage(), player1.getPositionX(), player1.getPositionY());
 						break;
 					case 2:
 						player2 = new Player(2, player.getPositionX(),player.getPositionY(), 32,32);
-						player2.setImage(image_joueur2);
+						player2.setImage(new Image("com/fr/ece/jbomb/view/Avatar/P2-1.png"));
 						//plateau_sprites[i][j] = player2;
 						gc2.drawImage(player2.getImage(), player2.getPositionX(), player2.getPositionY());
 						break;
 					case 3:
 						player3 = new Player(3, player.getPositionX(),player.getPositionY(), 32,32);
-						player3.setImage(image_joueur3);
+						player3.setImage(new Image("com/fr/ece/jbomb/view/Avatar/P3-1.png"));
 						//plateau_sprites[i][j] = player3;
 						gc2.drawImage(player3.getImage(), player3.getPositionX(), player3.getPositionY());
 						break;
 					case 4:
 						player4 = new Player(4,  player.getPositionX(),player.getPositionY(), 32,32);
-						player4.setImage(image_joueur4);
+						player4.setImage(new Image("com/fr/ece/jbomb/view/Avatar/P4-1.png"));
 						//plateau_sprites[i][j] = player4;
 						gc2.drawImage(player4.getImage(), player4.getPositionX(), player4.getPositionY());
 						break;
+				
 					}
 			}
 		}
-		System.out.println("initPlateauSprite : fin");
+		//System.out.println("initPlateauSprite : fin");
 	}
 
 	private void initFrontierePlateauSprite() {
 
-		System.out.println("initFrontierePlateauSprite");
-		/* Initialisation des canvas */
-		gc1 = canvas2.getGraphicsContext2D();
-
+		//System.out.println("initFrontierePlateauSprite");
 		/**
 		 * TODO : Check the font text
 		 */
@@ -172,7 +153,9 @@ public class GUI extends AbstractView {
 		new AnimationTimer() {
 
 			public void handle(long currentNanoTime) {
-
+			
+				int t=Calendar.getInstance().get(Calendar.MILLISECOND);
+			
 				// Dans la boucle
 				try {
 					// On met a jour la config avec les touches saisies par l'utilisateur
@@ -182,11 +165,12 @@ public class GUI extends AbstractView {
 
 					// Réccupération de la ConfigGraphique du serveur
 					configServeur = (ConfFromServer) getController().readConf();
-
+					
 					// -----------------------UPDATE // GRAPHIQUE à partir de la
 					// configuration du serveur
 					updateFromserver(canvas, canvas2, configServeur);
-
+					System.out.println(Calendar.getInstance().get(Calendar.MILLISECOND)-t);
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -213,6 +197,10 @@ public class GUI extends AbstractView {
 	public void start(Canvas canvas, Canvas canvas2, KeyEventHandler kev) {
 		this.canvas=canvas;
 		this.canvas2=canvas2;
+		/* Initialisation des canvas */
+		gc1 = canvas2.getGraphicsContext2D();
+		gc2 = canvas2.getGraphicsContext2D();
+		
 		// Comme les frontières seront toujours fixes, on ne touchera jamais
 		
 		// HORS DE LA BOUCLE on bind la config client avec le KeyEventHandler qui est liée à la scene

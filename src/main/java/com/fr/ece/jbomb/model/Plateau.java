@@ -13,8 +13,8 @@ public enum Plateau {
 	PLAYER4(4),
 	PILIER(5),
 	MUR(6),
-	BOMBE(7);
-	
+	BOMBE(7),
+	CRAME(8);
 	private int valeur;
 	
 	Plateau(int valeur){

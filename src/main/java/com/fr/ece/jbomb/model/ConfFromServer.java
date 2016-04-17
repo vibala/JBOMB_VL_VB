@@ -4,8 +4,9 @@ import static com.fr.ece.jbomb.model.Plateau.LARGEUR_PLATEAU;
 import static com.fr.ece.jbomb.model.Plateau.LONGUEUR_PLATEAU;
 import static com.fr.ece.jbomb.model.Plateau.MUR;
 import static com.fr.ece.jbomb.model.Plateau.PILIER;
-import static com.fr.ece.jbomb.model.Plateau.PLAYER1;
 import static com.fr.ece.jbomb.model.Plateau.SOL;
+import static com.fr.ece.jbomb.model.Plateau.CRAME;
+import static com.fr.ece.jbomb.model.Plateau.BOMBE;
 import static com.fr.ece.jbomb.view.Direction.EST;
 import static com.fr.ece.jbomb.view.Direction.NORD;
 import static com.fr.ece.jbomb.view.Direction.OUEST;
@@ -15,10 +16,13 @@ import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.fr.ece.jbomb.controller.BombTimer;
+import com.fr.ece.jbomb.server.Server;
 import com.fr.ece.jbomb.view.Direction;
 
 public class ConfFromServer implements Serializable {
@@ -29,6 +33,7 @@ public class ConfFromServer implements Serializable {
 	private List<Player> listPlayer;
 	private Plateau plateau[][];
 	private transient Map<Plateau, Point> playerByCoordinates;
+	private transient int ID_BOMB=0;
 	private String direction;
 
 	public ConfFromServer() {
@@ -39,14 +44,13 @@ public class ConfFromServer implements Serializable {
 		//Création d'un tableau aléatoire
 		this.plateau = new Plateau[17][23];
 		ajout_piliers_sols();
-		//ajout_murs();
+		ajout_murs();
 		ajout_players();
 		
 		update_array_plateau();
 	}
 	
 	// -------------------Fonction appelé côté CLIENT
-
 	public Plateau[][] getPlateau() {
 		return plateau;
 	}
@@ -58,7 +62,7 @@ public class ConfFromServer implements Serializable {
 	
 	
 	private void ajout_players() {
-		System.out.println("Ajout_Players : Entree");
+		//System.out.println("Ajout_Players : Entree");
 		Random rand = new Random();
 		List<Integer> picked_random_numbers = new ArrayList<Integer>();
 		Point[] coordonnees = new Point[4];
@@ -71,14 +75,14 @@ public class ConfFromServer implements Serializable {
 		picked_random_numbers.add(0); // a retirer??????????????????????????????????????????????????????????????????????????????????????????????
 		plateau[16][22] = Plateau.PLAYER1; //  a retirer ????????????????????????????????????????????????????????????????????????????????
 		plateau[0][0] = Plateau.PLAYER2;
-		plateau[16][0] = Plateau.PLAYER3;
-		plateau[0][22] = Plateau.PLAYER4;
+		plateau[0][22] = Plateau.PLAYER3;
+		plateau[16][0] = Plateau.PLAYER4;
 		// 4 changer 3 par 4 //A CHANGER ??????????????????????????????????????????????????????????????????????????????
 	/*	for(int i = 0; i < 3; i++){
 			cds = false;
 			while(!cds){
 				int rd = rand.nextInt(4); // entre 0 et 3
-				System.out.println(rd);
+				//System.out.println(rd);
 				if(!picked_random_numbers.contains(rd)){
 					picked_random_numbers.add(rd);
 					int posx = coordonnees[i].x;
@@ -88,12 +92,12 @@ public class ConfFromServer implements Serializable {
 				}
 			}
 		}*/
-		System.out.println("Ajout_Players : Sortie");
+		//System.out.println("Ajout_Players : Sortie");
 	}
 
 	private void ajout_piliers_sols() {
 		// Mise en forme du sol dans le tableau plateau
-		System.out.println("ajout_piliers_sols : Entree");
+		//System.out.println("ajout_piliers_sols : Entree");
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
 				if (i % 2 != 0 && j % 2 != 0) {
@@ -104,11 +108,11 @@ public class ConfFromServer implements Serializable {
 				}
 			}
 		}
-		System.out.println("ajout_piliers_sols : Sortie");
+		//System.out.println("ajout_piliers_sols : Sortie");
 	}
 
 	private void gestion_murs_particuliers(int nb_murs, Direction direction) {
-		System.out.println("gestion_murs_particuliers : Entree");
+		//System.out.println("gestion_murs_particuliers : Entree");
 		// Random
 		Random rand = new Random();
 
@@ -132,7 +136,7 @@ public class ConfFromServer implements Serializable {
 						}
 						break;
 					case SUD:
-						System.out.println(random_numbers.size());
+						//System.out.println(random_numbers.size());
 						while(!cds){
 							rand_num = rand.nextInt(16); // entre 0 et 16
 							if (!random_numbers.contains(rand_num)) {
@@ -166,12 +170,12 @@ public class ConfFromServer implements Serializable {
 		}
 		
 		random_numbers.clear();
-		System.out.println("gestion_murs_particuliers : Sortie");
+		//System.out.println("gestion_murs_particuliers : Sortie");
 		
 	}
 
 	private void ajout_murs() {
-		System.out.println("ajout_murs : Entree");
+		//System.out.println("ajout_murs : Entree");
 		// Random
 		Random rand = new Random();
 		int nb_murs = 0, rand_num = 0;
@@ -224,7 +228,7 @@ public class ConfFromServer implements Serializable {
 			}
 		}
 		
-		System.out.println("ajout_murs : Sortie");
+		//System.out.println("ajout_murs : Sortie");
 	}
 	
 	// -------------------Fonction appelé côté SERVER
@@ -238,44 +242,105 @@ public class ConfFromServer implements Serializable {
 		Player player = listPlayer.get(confToServer.idPlayer - 1);
 
 		if (confToServer.getKeyList().contains("RIGHT")) {
-			System.out.println("RIGHT");
+			//System.out.println("RIGHT");
 			direction = "RIGHT";
 			player.setDirectionPourSavoirQuelleImageAfficher("RIGHT");
 			if (!onPressedRight(player)) {
-				player.move(1, 0);
+				player.move(5, 0);
 			}
 		}
 
 		if (confToServer.getKeyList().contains("LEFT")) {
-			System.out.println("LEFT");
+			//System.out.println("LEFT");
 			direction = "LEFT";
 			player.setDirectionPourSavoirQuelleImageAfficher("LEFT");
 			if (!onPressedLeft(player)) {
-				player.move(-1, 0);
+				player.move(-5, 0);
 			}
 
 		}
 		if (confToServer.getKeyList().contains("UP")) {
-			System.out.println("UP");
+			//System.out.println("UP");
 			direction = "UP";
 			player.setDirectionPourSavoirQuelleImageAfficher("UP");
 			if (!onPressedUp(player)) {
-				player.move(0, -1);
+				player.move(0, -5);
 			}
 		}
 
 		if (confToServer.getKeyList().contains("DOWN")) {
-			System.out.println("DOWN");
+			//System.out.println("DOWN");
 			direction = "DOWN";
 			player.setDirectionPourSavoirQuelleImageAfficher("DOWN");
 			if (!onPressedDown(player)) {
-				player.move(0, 1);
+				player.move(0, 5);
 			}
-
 		}
+			if (confToServer.getKeyList().contains("B")) {
+				onPressedBomb(player);				
+		}
+
+			explosionDesBombes();
 		return this;
 	}
-
+	public void removePlayer(int i, int j){
+		{
+			if(plateau[i][j]==Plateau.PLAYER1){
+				listPlayer.get(0).setPositionX(-1000);
+			listPlayer.get(0).setPositionY(-1000);
+			//playerByCoordinates.put(plateau[i][j], null);
+			}
+			else if(plateau[i][j]==Plateau.PLAYER2){
+				listPlayer.get(1).setPositionX(-1000);
+			listPlayer.get(1).setPositionY(-1000);
+			//		playerByCoordinates.put(plateau[i][j], null);
+			}	else if(plateau[i][j]==Plateau.PLAYER3){
+				listPlayer.get(2).setPositionX(-1000);
+			listPlayer.get(2).setPositionY(-1000);
+			//	playerByCoordinates.put(plateau[i][j], null);
+			}
+			if(plateau[i][j]==Plateau.PLAYER4){
+				listPlayer.get(3).setPositionX(-1000);
+			listPlayer.get(3).setPositionY(-1000);
+			//		playerByCoordinates.put(plateau[i][j], null);
+			}
+			plateau[i][j]=SOL;//CRAME
+		//CRAME}
+		}
+	}
+public void explosionDesBombes(){
+	int i;
+	int j;
+	   synchronized(Server.JETON_BOMB) {
+		   Iterator it = Server.listBomb.entrySet().iterator(); //Exception ou on ne passe pas par le getListBomb car on sait que c'est nous qui avons le jeton
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	    	if((Integer)(pair.getKey())>=10000){ //car id bomb qui pète >= 100
+	    		i=(int) ((Bomb)pair.getValue()).getX();
+	    		j=(int) ((Bomb)pair.getValue()).getY();
+				if(0<=i&& i<=16 && 0<=j && j<= 22 && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+				removePlayer(i,j);
+				i=i+1;
+				j=j;
+				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+					removePlayer(i,j);
+				i=i-1-1;
+				j=j;
+				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+					removePlayer(i,j);
+				i=i+1;
+				j=j-1;
+				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+					removePlayer(i,j);
+				i=i;
+				j=j+2;
+				if(0<=i&& i<=16 && 0<=j && j<= 22  && (plateau[i][j]==MUR|plateau[i][j]==Plateau.PLAYER1|plateau[i][j]==Plateau.PLAYER2|plateau[i][j]==Plateau.PLAYER3|plateau[i][j]==Plateau.PLAYER4))
+					removePlayer(i,j);
+				
+				it.remove(); 
+			}}
+	    }
+}
 	private void update_array_plateau() {
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
@@ -290,7 +355,7 @@ public class ConfFromServer implements Serializable {
 				}
 				System.out.print(plateau[i][j].getValeur() + " ");
 			}
-			System.out.println();
+			//System.out.println();
 		}
 	}
 
@@ -371,8 +436,48 @@ public class ConfFromServer implements Serializable {
 				break;
 		}
 		
-		System.out.println("N°inter " + nb_intersections);
+		//System.out.println("N°inter " + nb_intersections);
 		return nb_intersections;
+	}
+	private boolean onPressedBomb(Player player) {
+		if(player.getBomb()==0){
+			System.out.println("Le joueur n'a plus de bombe ! "+player.getBomb());
+			return true;
+		}
+		//System.out.println("La bombe ne peut pas être posé "+player.getBomb());
+		
+		//Recup case devant joueur
+		int deltaX=0;
+		int deltaY=0;
+		 // Se fait en fonction de l'orientation de limage du player et si la case devan lui est vide
+		System.out.println("direction reagrd : " +player.getDirectionPourSavoirQuelleImageAfficher());
+		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("UP")) deltaX--;
+		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("DOWN")) deltaX++;
+		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("RIGHT")) deltaY++;
+		if(player.getDirectionPourSavoirQuelleImageAfficher().equals("LEFT")) deltaY--;
+		
+		//SSI caseRecup = 0
+		
+		int i =(int) (playerByCoordinates.get(Plateau.getNomByValeur(player.getID())).getX()+deltaX);
+		int j =(int) (playerByCoordinates.get(Plateau.getNomByValeur(player.getID())).getY()+deltaY);
+	
+		System.out.println("bombe essaye d'etre placé en :"+i+" "+j);
+		if(0<=i&& i<=16 && 0<=j && j<= 22 && plateau[i][j]==SOL)
+		{
+			plateau[i][j]=BOMBE;
+			//player.setBomb(player.getBomb()-1);
+			System.out.println("Bombe posé!");
+			//Ajouter la bombe dans la liste des bombes sur le serveur
+			int idBomb=ID_BOMB;
+			ID_BOMB++;
+			Bomb bomb=new Bomb(idBomb,i,j);
+			Server.getListBomb().put(idBomb,bomb);
+			
+			new Thread(new BombTimer(bomb)).start();
+			
+			return false;//Il n'y a rien devant toi player tu peux poser une bombe => renvoyer false
+		}
+		else return true;
 	}
 	
 	////////////////////////////////// Check fences
@@ -409,8 +514,8 @@ public class ConfFromServer implements Serializable {
 	public boolean is_any_collision(Player player1, Direction direction) {
 
 		// Coordonnes x,y du joueur dans le tableau tab[][]
-		int positionRow_player = playerByCoordinates.get(PLAYER1).x;
-		int positionCol_player = playerByCoordinates.get(PLAYER1).y;
+		int positionRow_player = playerByCoordinates.get(Plateau.getNomByValeur(player1.getID())).x;
+		int positionCol_player = playerByCoordinates.get(Plateau.getNomByValeur(player1.getID())).y;
 
 		int nb_intersections = 0;
 		int positionRow_neighbor;
@@ -426,40 +531,40 @@ public class ConfFromServer implements Serializable {
 			positionRow_neighbor = positionRow_player - 1;
 			positionCol_neighbor = positionCol_player;
 
-			System.out.println("Position Row Neighbor " + positionRow_neighbor + " Position Col Neighbor " + positionCol_neighbor);
+			//System.out.println("Position Row Neighbor " + positionRow_neighbor + " Position Col Neighbor " + positionCol_neighbor);
 
 			if (positionRow_neighbor >= 0) {
 				
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
 Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-simul.move(0, -1);
+simul.move(0, -5);
 
-				System.out.println("SIMU DONE");
-				System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
-				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				//System.out.println("SIMU DONE");
+				//System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
+				//System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul,NORD);
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0){
-					System.out.println("Mono intersection ");
+					//System.out.println("Mono intersection ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
+						//System.out.println("Min : " + min + " Max : " + max);
 						if (min <= simul.getPositionY() + 16 && simul.getPositionY() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player - 1, positionCol_player));
+							//System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(Plateau.getNomByValeur(player1.getID()), new Point(positionRow_player - 1, positionCol_player));
 							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+							plateau[positionRow_neighbor][positionCol_neighbor] = Plateau.getNomByValeur(player1.getID());
 						}
 						return false;
 					} else {
-						System.out.println("NO SOL");
+						//System.out.println("NO SOL");
 						return true;
 					}
 				}else if((simul.intersects(neighbor) && nb_intersections > 0)){
-					System.out.println("Multi intersections");
+					//System.out.println("Multi intersections");
 					return true;
 				}
 			}else if(positionRow_neighbor == -1){
@@ -468,42 +573,40 @@ simul.move(0, -1);
 				}
 					return true;
 			}
-			System.out.println("NNNNN");
 			return false; 
 		case SUD:
 			
 			// Coordonnes x,y du voisin dans le tableau tab[][]
 			positionRow_neighbor = positionRow_player + 1;
 			positionCol_neighbor = positionCol_player;
-			System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+positionRow_neighbor);
 			if (positionRow_neighbor < 17) {
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
 
 				Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-				simul.move(0, +1);
-				System.out.println("SIMU DONE");
-				System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
-				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				simul.move(0, +5);
+				//System.out.println("SIMU DONE");
+				//System.out.println("PLAYER1 COORDINATE IN PX : " + simul.getPositionX() + " " + simul.getPositionY());
+				//System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul,SUD);
 				
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0){
-					System.out.println("Only one neighbor ");
+					//System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionRow_neighbor + 1) * 32;
 						int max = (positionRow_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
+						//System.out.println("Min : " + min + " Max : " + max);
 						if (min <= simul.getPositionY() + 16 && simul.getPositionY() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player + 1, positionCol_player));
+							//System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(Plateau.getNomByValeur(player1.getID()), new Point(positionRow_player + 1, positionCol_player));
 							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+							plateau[positionRow_neighbor][positionCol_neighbor] = Plateau.getNomByValeur(player1.getID());
 						}
 						return false;
 						} else {
-							System.out.println("NO SOL");
+							//System.out.println("NO SOL");
 							return true;
 						}
 				}else if(simul.intersects(neighbor) && nb_intersections > 0){
@@ -515,7 +618,6 @@ simul.move(0, -1);
 				}
 					return true;
 			}
-			System.out.println("SSSSS");
 			return false; // s'il n'y a aucne intersection
 		case EST:
 			// Coordonnes x,y du voisin dans le tableau tab[][]
@@ -524,32 +626,32 @@ simul.move(0, -1);
 
 			if (positionCol_neighbor < 23) {
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-				System.out.println("SIMU DONE");
-				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
-				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				//System.out.println("SIMU DONE");
+				//System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				//System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
 				
 				Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-				simul.move(+1, 0);
+				simul.move(+5, 0);
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, simul,EST);
 
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0){
-					System.out.println("Only one neighbor ");
+					//System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionCol_neighbor + 1) * 32;
 						int max = (positionCol_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
+						//System.out.println("Min : " + min + " Max : " + max);
 						if (min <= simul.getPositionX() + 16 && simul.getPositionX() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player + 1));
+							//System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(Plateau.getNomByValeur(player1.getID()), new Point(positionRow_player, positionCol_player + 1));
 							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+							plateau[positionRow_neighbor][positionCol_neighbor] = Plateau.getNomByValeur(player1.getID());
 						}
 						return false;
 					} else {
-						System.out.println("NO SOL");
+						//System.out.println("NO SOL");
 						return true;
 					}
 				}else if(simul.intersects(neighbor) && nb_intersections > 0){
@@ -561,7 +663,6 @@ simul.move(0, -1);
 				}
 				return true;
 			}
-			System.out.println("EEEEEE");
 			return false; // s'il n'y a aucne intersection
 			
 		case OUEST:
@@ -571,33 +672,33 @@ simul.move(0, -1);
 
 			if (positionCol_neighbor >= 0) {
 				neighbor = createNeighborSprite(positionRow_neighbor, positionCol_neighbor);
-				System.out.println("SIMU DONE");
-				System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
-				System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
+				//System.out.println("SIMU DONE");
+				//System.out.println("PLAYER1 COORDINATE IN PX : " + player1.getPositionX() + " " + player1.getPositionY());
+				//System.out.println("NEIHBOR COORDINATE IN PX : " + neighbor.getPositionX() + " " + neighbor.getPositionY());
 				
 				Player simul=new Player(player1.getID(),player1.getPositionX(),player1.getPositionY(),player1.getWidth(),player1.getHeight());
 				// Simulation
-				simul.move(-1, 0);
+				simul.move(-5, 0);
 				
 				nb_intersections = checkFourNeighbor(positionRow_player, positionCol_player, player1,OUEST);
 
 				// Conditions : Vérification des collisions
 				if (simul.intersects(neighbor) && nb_intersections == 0) {
-					System.out.println("Only one neighbor ");
+					//System.out.println("Only one neighbor ");
 					if (plateau[positionRow_neighbor][positionCol_neighbor] == SOL) {
 						int min = (positionCol_neighbor + 1) * 32;
 						int max = (positionCol_neighbor + 2) * 32;
-						System.out.println("Min : " + min + " Max : " + max);
+						//System.out.println("Min : " + min + " Max : " + max);
 						if (min <= simul.getPositionX() + 16 && simul.getPositionX() + 16 <= max) {
-							System.out.println("CHANGE  SOL ");
-							playerByCoordinates.put(PLAYER1, new Point(positionRow_player, positionCol_player - 1));
+							//System.out.println("CHANGE  SOL ");
+							playerByCoordinates.put(Plateau.getNomByValeur(player1.getID()), new Point(positionRow_player, positionCol_player - 1));
 							plateau[positionRow_player][positionCol_player] = SOL;
-							plateau[positionRow_neighbor][positionCol_neighbor] = PLAYER1;
+							plateau[positionRow_neighbor][positionCol_neighbor] = Plateau.getNomByValeur(player1.getID());
 							return false;
 							
 						}
 					} else {
-							System.out.println("NO SOL");
+							//System.out.println("NO SOL");
 							return true;
 					}
 					
@@ -609,7 +710,6 @@ simul.move(0, -1);
 				return true;
 			}
 		}	
-		System.out.println("FFFFF");
 		return false;
 	}
 	
@@ -618,7 +718,7 @@ simul.move(0, -1);
 	
 	private boolean onPressedRight(Player player) {
 
-		System.out.println(player.getPositionX() + " " + player.getPositionY());
+		//System.out.println(player.getPositionX() + " " + player.getPositionY());
 		if (exceed_fences(player, EST)) {
 			return true;
 		}
@@ -626,7 +726,7 @@ simul.move(0, -1);
 	}
 
 	private boolean onPressedLeft(Player player) {
-		System.out.println(player.getPositionX() + " " + player.getPositionY());
+		//System.out.println(player.getPositionX() + " " + player.getPositionY());
 		// Si la méthode check_pillars_collisions renvoie false
 		if (exceed_fences(player, OUEST)) {
 			// Il existe une collision donc pas de déplacement
@@ -637,7 +737,7 @@ simul.move(0, -1);
 	}
 
 	private boolean onPressedUp(Player player) {
-		System.out.println(player.getPositionX() + " " + player.getPositionY());
+		//System.out.println(player.getPositionX() + " " + player.getPositionY());
 		if (exceed_fences(player, NORD)) {
 			return true;
 		}
@@ -645,12 +745,10 @@ simul.move(0, -1);
 	}
 
 	private boolean onPressedDown(Player player) {
-		System.out.println(player.getPositionX() + " " + player.getPositionY());
+		//System.out.println(player.getPositionX() + " " + player.getPositionY());
 		if (exceed_fences(player, SUD)) {
-			System.out.println("p");
 			return true;
 		}
-		System.out.println("e");
 		return is_any_collision(player, SUD);
 	}
 
