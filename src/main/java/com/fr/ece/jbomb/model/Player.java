@@ -9,7 +9,8 @@ public class Player extends Sprite implements Move,Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int idPlayer;
-	private String directionPourSavoirQuelleImageAfficher;
+	private String directionPourSavoirQuelleImageAfficher="DOWN";
+	private int bomb=1;
 	//private List<Bonus> BonusAcquis=new ArrayList<Bonus>();
 	
 	public Player(int id){
@@ -44,5 +45,11 @@ public class Player extends Sprite implements Move,Serializable{
 		 return idPlayer;
 	 }
 
+	public int getBomb() {
+		return bomb;
+	}
+	public void setBomb(int i) {
+	bomb=i;
+	}
 	
 }

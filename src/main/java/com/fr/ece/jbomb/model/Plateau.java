@@ -2,8 +2,8 @@ package com.fr.ece.jbomb.model;
 
 public enum Plateau {
 
-	LONGUEUR_PLATEAU(544),
-	LARGEUR_PLATEAU(736),
+	LONGUEUR_PLATEAU(608),
+	LARGEUR_PLATEAU(800),
 	LONGUEUR_CASE(32),
 	LARGEUR_CASE(32),
 	SOL(0),
@@ -13,8 +13,8 @@ public enum Plateau {
 	PLAYER4(4),
 	PILIER(5),
 	MUR(6),
-	BOMBE(7);
-	
+	BOMBE(7),
+	CRAME(8);
 	private int valeur;
 	
 	Plateau(int valeur){

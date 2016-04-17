@@ -1,10 +1,12 @@
 package com.fr.ece.jbomb.model;
 
+import java.io.Serializable;
+
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class Sprite {
+public abstract class Sprite implements Serializable {
 	protected transient Image image;
 	protected double positionX;
 	protected double positionY;
@@ -33,7 +35,9 @@ public abstract class Sprite {
 	public Rectangle2D getBoundary() {
 		return new Rectangle2D(positionX, positionY, width, height);
 	}
-
+	/*public Rectangle2D getBoundaryDecor() {
+		return new Rectangle2D(positionX, positionY, width, height);
+	}*/
 	public boolean intersects(Sprite s) {
 		return s.getBoundary().intersects(this.getBoundary());
 	}
