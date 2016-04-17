@@ -77,7 +77,6 @@ public class ConnectionHandler implements Runnable {
 				try {
 					socketServerforClient.close();
 				} catch (IOException e) {
-					 System.out.println("connexion merde");
 				}
 		}
 	}

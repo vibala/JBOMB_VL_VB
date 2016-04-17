@@ -75,8 +75,8 @@ public class ConfFromServer implements Serializable {
 	private void ajout_players() {
 		plateau[16][22] = Plateau.PLAYER1;		
 		plateau[0][0] = Plateau.PLAYER2;
-		plateau[16][0] = Plateau.PLAYER3;
-		plateau[0][22] = Plateau.PLAYER4;		
+		plateau[0][22] = Plateau.PLAYER3;
+		plateau[16][0] = Plateau.PLAYER4;		
 	}
 
 	/**

@@ -4,6 +4,7 @@ package com.fr.ece.jbomb.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fr.ece.jbomb.view.GUI;
 import com.fr.ece.jbomb.view.KeyEventHandler;
 
 /**
@@ -33,6 +34,8 @@ public class ConfToServer implements Serializable{
 	 **/
 	public void update(){
 		keyList=keyHandler.getInputList();
+		if(keyList.contains("Q"))
+		GUI.endOfGame=true;
 	}
 	
 	/**

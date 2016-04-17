@@ -27,7 +27,7 @@ public class Server {
 	private ServerSocket server;
 	public static Map<Point,Bomb> listBomb = new HashMap<Point,Bomb>();
 	public static List<FireTimer> listFire = new ArrayList<FireTimer>();
-	private static List<ConnectionHandler> listConnectionHandler = new ArrayList<ConnectionHandler>(); // utile pour chat privée 
+	private int nbConnexion=0;
 	public static boolean endOftheGame=false;	
 	private static ConfFromServer confFromServer=new ConfFromServer();
 	private static Object JETON_CONF =  new Object();
@@ -57,7 +57,7 @@ public class Server {
 	public void start() throws InterruptedException, IOException {
 		while (!endOftheGame) {
 			// Accepter connexion ssi nb joueur < ou = à 4
-			if (listConnectionHandler.size() <= 4) {
+			if (nbConnexion <= 4) {
 
 				// Attente de connexion
 				Socket socketServerforClient = server.accept();
@@ -65,16 +65,17 @@ public class Server {
 
 				//Création du joueur
 				Player player = null;
-				if(listConnectionHandler.size()+1==1)  player=new Player(1,736-1, 544-1, 30, 30); 
-				else if(listConnectionHandler.size()+1==2)  player=new Player(2,32-1, 32-1, 30, 30);
-				else if(listConnectionHandler.size()+1==3)  player=new Player(3,736-1, 32-1, 30, 30);
-				else if(listConnectionHandler.size()+1==4)  player=new Player(4,32-1, 544-1, 30, 30);
+				nbConnexion++;
+				if(nbConnexion==1)  player=new Player(1,736-1, 544-1, 30, 30); 
+				else if(nbConnexion==2)  player=new Player(2,32-1, 32-1, 30, 30);
+				else if(nbConnexion==3)  player=new Player(3,736-1, 32-1, 30, 30);
+				else if(nbConnexion==4)  player=new Player(4,32-1, 544-1, 30, 30);
 
 				confFromServer.addPlayer(player); // On ajoute le joueur à la liste des joueurs
 				
 				// Lancement d'une connexion privé avec le client
 				ConnectionHandler handler = new ConnectionHandler(socketServerforClient,player);
-				listConnectionHandler.add(handler); //  On ajoute la socket à la liste des sockets client du serveur
+			
 				new Thread(handler).start(); // On lance un thread
 			} else {
 
@@ -84,15 +85,6 @@ public class Server {
 	// La fermeture du server est innateignable pour l'instant
 	server.close();
 		
-	}
-
-	/**
-	 * Récupère la liste des connexions clientes
-	 * @return listConnectionsHandler liste des connexions clientes
-	 **/
-	//Appelé dans les connectionHandler pour savoir si les 4 joueurs se sont connectés
-	public static List<ConnectionHandler> getListConnectionHandler(){
-		return listConnectionHandler;
 	}
 	
 	/**
