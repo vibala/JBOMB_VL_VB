@@ -55,19 +55,29 @@ public class ConnectionHandler implements Runnable {
 			// while(Server.getListConnectionHandler().size()!=4){}
 			 			 
 			 //Boucle de réponse au client
-			 while(!Server.endOftheGame){
+			 while(!socketServerforClient.isClosed()){
 				
 				ConfToServer confToServer=(ConfToServer) ois.lire(); //Lecture confToServeur 3.0	
+				if (confToServer==null) {
+					Server.updateDisconnectedPlayer(player.getID());
+					break;
+				}
 				//Traitement + Envoi de la configuration sur le tableau
 				oos.envoyer(Server.updateConfFromServer(confToServer));//Envoi de la configuration actuel sur le serveur (même si d'autres joueurs l'ont modifié entre l'update et l'envoit c'est pas grv car les changement du joueur ont été pris en comtpe)
+			
 			 }
-			 
-			socketServerforClient.close();
+		
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			
+		}finally{
+			System.out.println("Le joueur s'est déconnecté");
+			 System.out.println("La connexion est maintenant terminée pour le client "+player.getID());
+				try {
+					socketServerforClient.close();
+				} catch (IOException e) {
+					 System.out.println("connexion merde");
+				}
 		}
 	}
 
