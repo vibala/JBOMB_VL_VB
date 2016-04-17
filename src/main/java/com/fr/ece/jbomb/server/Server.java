@@ -18,7 +18,7 @@ import com.fr.ece.jbomb.model.Player;
 
 /**
  * Classe representant le serveur du jeu Bomberman
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA
  * @version 1.0
  **/
 public class Server {
@@ -131,7 +131,7 @@ public class Server {
 	}
 	/**
 	 * MEttre a jour les déconnexions des joueurs dans la conf
-	 * @param idPlayer
+	 * @param idPlayer p
 	 */
 	public static void updateDisconnectedPlayer(int idPlayer) {
 		   synchronized(JETON_CONF) {

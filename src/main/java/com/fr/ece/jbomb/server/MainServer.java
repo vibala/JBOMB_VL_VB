@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 /**
  * Classe de démarrage du serveur
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA
  * @version 1.0
  **/
 public class MainServer {
 	/**
 	 * Initialise le port d'écoute et l'adresse IP du serveur ainsi que le nombre de connexions 
 	 * Instancie la classe Server et démarre le serveur
-	 * @param args 
+	 * @param args  args
 	 * @exception InterruptedException si le thread a été interrompu
 	 * @exception IOException si les entrées/sorties sont corrompues
 	 **/

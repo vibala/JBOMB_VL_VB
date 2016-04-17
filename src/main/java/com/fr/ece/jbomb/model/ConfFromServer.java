@@ -28,7 +28,7 @@ import com.fr.ece.jbomb.server.Server;
 import com.fr.ece.jbomb.view.Direction;
 /**
  * Classe permettant de stocker les informations (config plateau + liste des joueurs) à transmettre au client
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA
  * @version 1.0
  **/
 public class ConfFromServer implements Serializable {
@@ -234,7 +234,7 @@ public class ConfFromServer implements Serializable {
 	/**
 	 * Met à jour les configurations du plateau et de la liste des joueurs souhaitées par le client
 	 * et retourne les nouvelles configurations 
-	 * @param p Player 
+	 * @param confToServer Configuration 
 	 * @return confFromServer Configuration du plateau et de la liste des joueurs
 	 **/
 	public ConfFromServer update(ConfToServer confToServer) {
@@ -514,9 +514,12 @@ public class ConfFromServer implements Serializable {
 	}
 	
    
+
 	/**
 	 * Retire le joueur du plateau une fois qu'il est touché par une bombe
-	 **/
+	 * @param i indice row
+	 * @param j indice column
+	 */
 	public void removePlayer(int i, int j){
 		{
 			if(plateau[i][j]==Plateau.BOMBE){
@@ -893,7 +896,7 @@ public class ConfFromServer implements Serializable {
 	}
 	/**
 	 * Mettre a jour les joueurs qui se sont déconnectés
-	 * @param idPlayer
+	 * @param idPlayer idPlayer
 	 */
 	public void updateDisconnectedPlayer(int idPlayer) {
 		System.out.println(listPlayer.get(idPlayer-1));

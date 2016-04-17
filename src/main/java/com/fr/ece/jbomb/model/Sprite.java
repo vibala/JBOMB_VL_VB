@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 
 /**
  * Classe abstraite sérialisée représentant un sprite
- * @author Vignesh BALA && Vincent LIM
+ * @author Vincent LIM
  * @version 1.0
  **/
 public abstract class Sprite implements Serializable {
@@ -28,8 +28,12 @@ public abstract class Sprite implements Serializable {
 	}
 
 	/**
-	 * Constructeur
-	 **/
+	 * Sprite 
+	 * @param posX posX
+	 * @param posY posY
+	 * @param width width
+	 * @param height height
+	 */
 	public Sprite(double posX, double posY, double width, double height) {
 		this.positionX = posX;
 		this.positionY = posY;
@@ -104,7 +108,7 @@ public abstract class Sprite implements Serializable {
 
 	/**
 	 * Associe la positionY du sprite
-	 * @param positionYy PositionY
+	 * @param positionY PositionY
 	 **/
 	public void setPositionY(double positionY) {
 		this.positionY = positionY;

@@ -19,8 +19,8 @@ public class BufferedReaderChat extends BufferedReader{
 	}
 	/**
 	 * lire les données envoyé par le serveur dans le flux
-	 * @return
-	 * @throws IOException
+	 * @return retourne les données
+	 * @throws IOException Exception
 	 */
 	public String lire() throws IOException{
 		return this.readLine();

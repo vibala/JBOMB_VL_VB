@@ -1,7 +1,7 @@
 package com.fr.ece.jbomb.view;
 /**
  * Classe représentant les directions des joueurs
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA
  * @version 1.0
  **/
 

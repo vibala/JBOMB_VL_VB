@@ -16,7 +16,7 @@ public class FireTimer implements Runnable{
 	}
 /**
  * Réccuperer l'indice row de la flamme dans le plateau
- * @return
+ * @return retourne indice 
  */
 		public int getI() {
 		return i;
@@ -24,21 +24,21 @@ public class FireTimer implements Runnable{
 
 		/**
 		 * Permet de savoir si la flamme est présent dans le plateau
-		 * @return 
+		 * @return retourne l'état de la flamme
 		 */
 	public boolean getBurned() {
 		return burned;
 	}
 	/**
 	 * Modifier l'état de la flamme dans le plateau
-	 * @param bool
+	 * @param bool modifier
 	 */
 	public void setBurned(boolean bool) {
 		 burned=bool;
 	}
 	/**
 	 *  Réccuperer l'indice column de la flamme dans le plateau
-	 * @return
+	 * @return retourne indice
 	 */
 	public int getJ() {
 		return j;

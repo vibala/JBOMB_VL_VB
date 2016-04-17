@@ -9,7 +9,7 @@ import com.fr.ece.jbomb.view.KeyEventHandler;
 
 /**
  * Classe pour stocker les informations (config plateau + liste des joueurs) à transmettre au serveur
- * @author Vignesh BALA && Vincent LIM
+ * @author Vincent LIM
  * @version 1.0
  **/
 public class ConfToServer implements Serializable{

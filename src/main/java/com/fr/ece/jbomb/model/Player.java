@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Classe représentant le sprite associé au joueur
- * @author Vignesh BALA && Vincent LIM
+ * @author Vincent LIM
  * @version 1.0
  **/
 public class Player extends Sprite implements Move,Serializable{
@@ -24,17 +24,26 @@ public class Player extends Sprite implements Move,Serializable{
 		directionPourSavoirQuelleImageAfficher="";
 	}
 	
-	/**
-	 * Constructeur
-	 **/
+/**
+ * Player
+ * @param id id
+ * @param posX posX
+ * @param posY posY
+ * @param width width
+ * @param height height
+ */
 	 public Player(int id,double posX, double posY,double width, double height){
 		 super(posX,posY,width,height);
 		 this.idPlayer=id;
 	 }
 	 
-	 /**
-	 * Constructeur
-	 **/
+	/**
+	 * Player
+	 * @param posX posX
+	 * @param posY posY
+	 * @param width width
+	 * @param height height
+	 */
 	public Player(double posX, double posY,double width, double height){
 		 super(posX,posY,width,height);
 	 }
@@ -83,7 +92,7 @@ public class Player extends Sprite implements Move,Serializable{
 
 	/**
 	 * Met à jour le nombre de bombes
-	 * @param p Player 
+	 * @param i indice 
 	 **/
 	public void setBomb(int i) {
 		bomb=i;

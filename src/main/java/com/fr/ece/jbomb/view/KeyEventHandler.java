@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Classe permettant de gérer les touches de clavier saisies
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA
  * @version 1.0
  **/
 

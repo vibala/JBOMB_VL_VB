@@ -14,7 +14,7 @@ private PrintWriterChat w;
  * Constructeur
  * @param in Wrap du in
  * @param w Réccup un write pour une amorce (amérlioration futures possibles)
- * @throws IOException
+ * @throws IOException Exception
  */
 	public ObjectInputStreamChat(InputStream in,PrintWriterChat w) throws IOException {
 		super(in);
@@ -22,9 +22,9 @@ private PrintWriterChat w;
 	}
         /**
          * Lecture de l'objet depuis le serveur
-         * @return
-         * @throws IOException
-         * @throws ClassNotFoundException
+         * @return retourne objet lu
+         * @throws IOException Excption
+         * @throws ClassNotFoundException Exception
          */
         public Object lire() throws IOException, ClassNotFoundException{
             w.envoyer("Amorce");

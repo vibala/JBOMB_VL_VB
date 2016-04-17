@@ -4,7 +4,7 @@ import com.fr.ece.jbomb.server.Server;
 
 /**
  * Permet de configurer le temps d'attente avant que la bombe explose
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA
  *
  */
 public class BombTimer implements Runnable {

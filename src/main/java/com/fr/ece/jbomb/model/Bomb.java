@@ -4,7 +4,7 @@ import java.awt.Point;
 
 /**
  * Classe représentant une bombe
- * @author Vignesh BALA && Vincent LIM
+ * @author Vincent LIM
  * @version 1.0
  **/
 

@@ -18,7 +18,7 @@ import javafx.scene.image.Image;
 
 /**
  * Classe de la représentation du GUI 
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA
  * @version 1.0
  **/
 public class GUI extends AbstractView {

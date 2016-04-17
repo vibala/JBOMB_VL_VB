@@ -14,7 +14,7 @@ import com.fr.ece.jbomb.model.Player;
 
 /**
  * Classe Thread gérant chaque connexion cliente
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA 
  * @version 1.0
  **/
 public class ConnectionHandler implements Runnable {

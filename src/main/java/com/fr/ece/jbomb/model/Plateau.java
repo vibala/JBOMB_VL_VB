@@ -2,7 +2,7 @@ package com.fr.ece.jbomb.model;
 
 /**
  * Classe d'énumération stockant les informations essentielles du plateau
- * @author Vignesh BALA && Vincent LIM
+ * @author Vincent LIM
  * @version 1.0
  **/
 public enum Plateau {
@@ -32,7 +32,8 @@ public enum Plateau {
 	/**
 	 * Retourne l'objet de cette classe à partir de la valeur passée en paramètre
 	 * @param valeur Valeur associée à chaque objet énuméré
-	 **/
+	 * @return retourne le plateau
+	 */
 	public static Plateau getNomByValeur(int valeur){
 		for (Plateau plateau : Plateau.values()) {
 			if(plateau.valeur == valeur){

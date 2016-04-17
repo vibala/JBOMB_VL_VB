@@ -2,7 +2,7 @@ package com.fr.ece.jbomb.model;
 
 /**
  * Classe représentant un objet décor (mur et pilier)
- * @author Vignesh BALA && Vincent LIM
+ * @author Vignesh BALA 
  * @version 1.0
  **/
 @SuppressWarnings("serial")

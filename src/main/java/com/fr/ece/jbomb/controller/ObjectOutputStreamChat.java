@@ -16,7 +16,7 @@ private BufferedReaderChat r;
  * Constructeur
  * @param out sortie pour wrap la classe ObjectOutputStream
  * @param r prend un reader pour de futures améliorations possibles
- * @throws IOException
+ * @throws IOException Exception
  */
 	public ObjectOutputStreamChat(OutputStream out,BufferedReaderChat r) throws IOException {
 		super(out);
@@ -24,7 +24,7 @@ private BufferedReaderChat r;
 	}
 	/**
 	 * Envoyer un objet vers le serveur
-	 * @param o
+	 * @param o param objet envoyé
 	 */
 	public void envoyer(Object o){
             try {

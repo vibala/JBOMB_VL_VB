@@ -23,7 +23,7 @@ public class Client implements Serializable{
        * Constructeur Client
        * @param hostname hostname
        * @param port port hote
-       * @throws IOException
+       * @throws IOException Exception
        */
       public Client(String hostname,int port) throws IOException{
           this.hostname=hostname;
@@ -34,9 +34,9 @@ public class Client implements Serializable{
       }
       /**
        * Configuration de la connexion
-       * @param servername
-       * @param serverPort
-       * @throws IOException
+       * @param servername servername
+       * @param serverPort serverPort
+       * @throws IOException Exception
        */
       public void connect(String servername,int serverPort) throws IOException{
           connection.bind(new InetSocketAddress(getHostname(), getPort()));
@@ -44,7 +44,7 @@ public class Client implements Serializable{
       }
 /**
  * Reccupérer la connexion
- * @return
+ * @return Retourne connexion
  */
     public Socket getConnection() {
         return connection;
@@ -63,14 +63,14 @@ public class Client implements Serializable{
     
     /**
      * Reccuperer pseudo   
-     * @return
+     * @return retourne pseudo
      */
    public String getPseudo() {
         return pseudo;
     }
 /**
  * Modifier le pseudo
- * @param name
+ * @param name retourne name
  */
     public void setPseudo(String name) {
         this.pseudo = name;
@@ -78,28 +78,28 @@ public class Client implements Serializable{
 
 /**
  * Reccupérer hostname
- * @return
+ * @return retourne hostname
  */
     public String getHostname() {
         return hostname;
     }
 /**
  * Modifier le hostname
- * @param hostname
+ * @param hostname hostname
  */
     public void setHostname(String hostname) {
         this.hostname = hostname;
     }
 /**
  * reccup port
- * @return
+ * @return retourne port
  */
     public int getPort() {
         return port;
     }
 /**
  * modifier le port
- * @param port
+ * @param port port
  */
     public void setPort(int port) {
         this.port = port;
@@ -107,7 +107,6 @@ public class Client implements Serializable{
 /**
  * Comparer
  */
-    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;

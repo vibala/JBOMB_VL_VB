@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 public class PrintWriterChat extends PrintWriter{
 /**
  * Constructeur
- * @param arg0
+ * @param arg0 arg0
  */
 	public PrintWriterChat(OutputStreamWriter arg0) {
 		super(arg0);
@@ -19,8 +19,12 @@ public class PrintWriterChat extends PrintWriter{
 	}
 	/**
 	 * envoyer ses données envoyé dans le flux
-	 * @return
-	 * @throws IOException
+	 * @throws IOException Exception
+	 */
+	/**
+	 * envoyer ses données envoyé dans le flux
+	 * @param s chaine de caractere
+	 * @throws IOException Exception
 	 */
 	public void envoyer(String s) throws IOException{
 		println(s);

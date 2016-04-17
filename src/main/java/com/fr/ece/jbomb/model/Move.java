@@ -2,7 +2,7 @@ package com.fr.ece.jbomb.model;
 
 /**
  * Interface pour le déplacement des joueurs
- * @author Vignesh BALA && Vincent LIM
+ * @author Vincent LIM
  * @version 1.0
  **/
 public interface Move {
