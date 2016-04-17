@@ -896,6 +896,7 @@ public class ConfFromServer implements Serializable {
 	 * @param idPlayer
 	 */
 	public void updateDisconnectedPlayer(int idPlayer) {
+		System.out.println(listPlayer.get(idPlayer-1));
 		listPlayer.get(idPlayer-1).setPositionX(-1000);
 		listPlayer.get(idPlayer-1).setPositionY(-1000);
 		for (int i = 0; i < 17; i++) {

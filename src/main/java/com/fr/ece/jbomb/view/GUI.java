@@ -129,8 +129,7 @@ public class GUI extends AbstractView {
 	 * @param listPlayer Liste des joueurs
 	 **/
 	private void initPlateauSprite(Plateau[][] plateau, List<Player> listPlayer) {
-		System.out.println("initPlateauSprite : debut");
-
+		
 		/* Initialisation des canvas */
 		gc1 = canvas2.getGraphicsContext2D();
 		gc2 = canvas2.getGraphicsContext2D();
@@ -147,8 +146,7 @@ public class GUI extends AbstractView {
 		// Dessiner les joueurs sur le plateau
 		drawPlayerPlateau(plateau,listPlayer);
 		
-		System.out.println("initPlateauSprite : fin");
-	}
+}
 	
 	/**
 	 * Place les barrières et le sol sur le plateau 
@@ -210,7 +208,6 @@ public class GUI extends AbstractView {
 					// -----------------------UPDATE // GRAPHIQUE à partir de la
 					// configuration du serveur
 					updateFromserver(canvas, canvas2, configServeur);
-					System.out.println(Calendar.getInstance().get(Calendar.MILLISECOND)-t);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
