@@ -13,7 +13,6 @@ import java.util.Map;
 import com.fr.ece.jbomb.model.Bomb;
 import com.fr.ece.jbomb.model.ConfFromServer;
 import com.fr.ece.jbomb.model.ConfToServer;
-import com.fr.ece.jbomb.model.Plateau;
 import com.fr.ece.jbomb.model.Player;
 
 

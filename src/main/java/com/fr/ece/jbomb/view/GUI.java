@@ -92,32 +92,22 @@ public class GUI extends AbstractView {
 		// Mur
 		Image mur = new Image("com/fr/ece/jbomb/view/Decors/mur_end_v5.png");
 			
-		// Instanciation d'un objet decor, des objets player
-		Decor decor;
+		// Bombe
+		Image bombe = new Image("com/fr/ece/jbomb/view/Avatar/bomb.png");
+		
 		for (int i = 0; i < 17; i++) {
 			for (int j = 0; j < 23; j++) {
 				switch (plateau[i][j]) {
 					case PILIER:
-						decor = new Decor();
-						decor.setImage(pilier);
-						decor.setPositionX((j + 1) * 32);
-						decor.setPositionY((i + 1) * 32);
-						decor.setWidth(32);
-						decor.setHeight(32);
-						gc1.drawImage(decor.getImage(), decor.getPositionX(), decor.getPositionY());
-						
+						gc1.drawImage(pilier, (j + 1) * 32, (i + 1) * 32);
 						break;
 					
 					case MUR:
-						decor = new Decor();
-						decor.setImage(mur);
-						decor.setPositionX((j + 1) * 32);
-						decor.setPositionY((i + 1) * 32);
-						decor.setWidth(32);
-						decor.setHeight(32);
-						gc1.drawImage(decor.getImage(), decor.getPositionX(), decor.getPositionY());
+						gc1.drawImage(mur, (j + 1) * 32, (i + 1) * 32);
 						break;
-					
+					case BOMBE:
+						gc1.drawImage(bombe, (j + 1) * 32, (i + 1) * 32);
+						break;
 					default:
 						break;
 				}
@@ -140,11 +130,11 @@ public class GUI extends AbstractView {
 		// le canvas où les frontières ont été dessinées
 		initFrontierePlateauSprite();
 
-		// Dessiner les joueurs sur le plateau
-		drawPlayerPlateau(plateau,listPlayer);
-		
 		// Dessiner les décors sur le plateau
 		drawDecorPlateau(plateau);
+		
+		// Dessiner les joueurs sur le plateau
+		drawPlayerPlateau(plateau,listPlayer);
 		
 		System.out.println("initPlateauSprite : fin");
 	}

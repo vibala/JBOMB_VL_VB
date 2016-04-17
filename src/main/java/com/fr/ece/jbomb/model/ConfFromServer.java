@@ -557,7 +557,7 @@ public class ConfFromServer implements Serializable {
 				} else if (plateau[i][j] == Plateau.MUR) {
 				}
 
-				plateau[i][j] = SOL;// CRAME
+				plateau[i][j] = CRAME; 
 			}
 	}
 
@@ -572,7 +572,7 @@ public class ConfFromServer implements Serializable {
 				i = (int) ((Bomb) pair.getValue()).getX();
 				j = (int) ((Bomb) pair.getValue()).getY();
 				if (0 <= i && i <= 16 && 0 <= j && j <= 22) {
-					plateau[i][j] = SOL;// CRAME
+					plateau[i][j] = CRAME;
 					it.remove(); // On suprime la bombe
 				}
 				i = i + 1;
